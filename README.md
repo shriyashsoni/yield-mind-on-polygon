@@ -13,7 +13,7 @@
 
 **Maximize your DeFi yields with AI-powered portfolio optimization on Polygon**
 
-[🚀 Launch App](https://yieldmind.finance) • [📖 Documentation](https://docs.yieldmind.finance) • [💬 Discord](https://discord.gg/yieldmind) • [🐦 Twitter](https://twitter.com/yieldmind)
+[🚀 Launch App](https://yieldmind.finance) • [📖 Documentation](https://docs.yieldmind.finance)  • [🐦 Twitter]([(https://x.com/shriyash_soni)}])
 
 </div>
 
