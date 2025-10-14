@@ -18,6 +18,11 @@
 
 ---
 
+
+
+<img width="1919" height="1079" alt="Screenshot 2025-10-15 010107" src="https://github.com/user-attachments/assets/6a7be509-b0e3-4158-9d7c-d65b39d11b0f" />
+
+
 ## 🌟 Overview
 
 YieldMind is an intelligent DeFi portfolio optimizer that leverages **machine learning** to automatically rebalance your assets across Polygon protocols, maximizing yields while managing risk. Built on **Polygon zkEVM** for ultra-low gas fees and powered by **AI agents** for smart decision-making.
