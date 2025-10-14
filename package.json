@@ -1,0 +1,45 @@
+{
+  "name": "yieldmind",
+  "version": "1.0.0",
+  "description": "AI-Powered DeFi Portfolio Optimizer on Polygon",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@radix-ui/react-checkbox": "latest",
+    "@radix-ui/react-progress": "latest",
+    "@radix-ui/react-scroll-area": "latest",
+    "@radix-ui/react-tabs": "latest",
+    "@rainbow-me/rainbowkit": "2.2.9",
+    "@tanstack/react-query": "latest",
+    "@vercel/analytics": "latest",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "latest",
+    "ethers": "latest",
+    "geist": "latest",
+    "lucide-react": "^0.454.0",
+    "next": "15.2.4",
+    "react": "^19",
+    "react-dom": "^19",
+    "recharts": "latest",
+    "sonner": "latest",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7",
+    "tw-animate-css": "latest",
+    "viem": "2.38.2",
+    "wagmi": "2.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.5",
+    "tailwindcss": "^4.1.9",
+    "typescript": "^5"
+  }
+}
