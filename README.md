@@ -1,6 +1,5 @@
 <div align="center">
 
-![YieldMind Logo](public/yieldmind-logo.png)
 
 # 🧠 YieldMind
 ### AI-Powered DeFi Portfolio Optimizer on Polygon
