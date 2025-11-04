@@ -2,7 +2,21 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Brain, TrendingUp, Shield, Zap, BarChart3, Users, ArrowRight, CheckCircle2 } from "lucide-react"
+import {
+  Brain,
+  TrendingUp,
+  Shield,
+  Zap,
+  BarChart3,
+  Users,
+  ArrowRight,
+  CheckCircle2,
+  Sparkles,
+  Rocket,
+  Lock,
+  Activity,
+  Vote,
+} from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import Image from "next/image"
@@ -65,6 +79,175 @@ export default function HomePage() {
                 <span>Polygon zkEVM</span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Updates Section - Wave 2 */}
+      <section className="py-24 bg-gradient-to-br from-primary/5 via-background to-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
+              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+              <span className="text-sm font-medium text-primary">Wave 2 Updates</span>
+            </div>
+            <h2 className="text-4xl font-bold mb-4">What's New in YieldMind</h2>
+            <p className="text-lg text-muted-foreground text-balance">
+              Major upgrades and new features to enhance your DeFi experience
+            </p>
+            <div className="mt-6">
+              <a
+                href="https://yieldmind.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
+              >
+                <Rocket className="w-4 h-4" />
+                Try Live Demo
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* AI Optimization Engine v2 */}
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
+              <div className="absolute top-3 right-3">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                  <Sparkles className="w-3 h-3" />
+                  NEW
+                </span>
+              </div>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">AI Optimization Engine v2</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Improved prediction accuracy by training models on larger DeFi datasets, including protocol APYs,
+                  liquidity depth, and market volatility
+                </p>
+                <div className="flex items-center gap-2 text-xs text-primary font-medium">
+                  <Activity className="w-3 h-3" />
+                  <span>Enhanced ML Models</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Smart Contract Upgrade */}
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
+              <div className="absolute top-3 right-3">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-500 text-white text-xs font-bold">
+                  <CheckCircle2 className="w-3 h-3" />
+                  UPDATED
+                </span>
+              </div>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
+                  <Lock className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-xl font-bold">Smart Contract Upgrade</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Added automated rebalancing logic and safety circuit breakers to minimize impermanent loss during high
+                  volatility
+                </p>
+                <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 font-medium">
+                  <Shield className="w-3 h-3" />
+                  <span>Enhanced Security</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* zkEVM Integration */}
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
+              <div className="absolute top-3 right-3">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-500 text-white text-xs font-bold">
+                  <Zap className="w-3 h-3" />
+                  UPGRADED
+                </span>
+              </div>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-500/10 flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold">zkEVM Integration</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Migrated all core contracts fully to Polygon zkEVM, improving gas efficiency by 40% and enabling
+                  zero-knowledge-based transaction proofs
+                </p>
+                <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400 font-medium">
+                  <TrendingUp className="w-3 h-3" />
+                  <span>40% Gas Savings</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Performance Dashboard */}
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
+              <div className="absolute top-3 right-3">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500 text-white text-xs font-bold">
+                  <BarChart3 className="w-3 h-3" />
+                  ENHANCED
+                </span>
+              </div>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold">Performance Dashboard</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Enhanced the UI/UX for real-time visualization of yield curves, portfolio allocations, and AI
+                  performance metrics
+                </p>
+                <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 font-medium">
+                  <Activity className="w-3 h-3" />
+                  <span>Real-time Analytics</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* DAO Module Expansion */}
+            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
+              <div className="absolute top-3 right-3">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500 text-white text-xs font-bold">
+                  <Users className="w-3 h-3" />
+                  EXPANDED
+                </span>
+              </div>
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-500/10 flex items-center justify-center">
+                  <Vote className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <h3 className="text-xl font-bold">DAO Module Expansion</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Enabled community staking and proposal-based governance through a transparent on-chain voting
+                  mechanism
+                </p>
+                <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400 font-medium">
+                  <Users className="w-3 h-3" />
+                  <span>Community Governed</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Live Preview CTA */}
+            <Card className="border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary hover:shadow-xl transition-all">
+              <CardContent className="p-6 space-y-4 flex flex-col justify-center h-full">
+                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                  <Rocket className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">Experience Wave 2</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Try all the new features live on our demo platform
+                </p>
+                <Button asChild className="w-full gap-2">
+                  <a href="https://yieldmind.vercel.app" target="_blank" rel="noopener noreferrer">
+                    Launch Demo
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
