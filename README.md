@@ -1,5 +1,6 @@
 <div align="center">
 
+![YieldMind Logo](public/yieldmind-logo.png)
 
 # 🧠 YieldMind
 ### AI-Powered DeFi Portfolio Optimizer on Polygon
@@ -12,16 +13,11 @@
 
 **Maximize your DeFi yields with AI-powered portfolio optimization on Polygon**
 
-[🚀 Launch App](yieldmind.vercel.app/) • [📖 Documentation](https://yieldmind.vercel.app/docs)  • [🐦 Twitter](https://x.com/shriyash_soni)
+[🚀 Launch App](https://yieldmind.finance) • [📖 Documentation](https://docs.yieldmind.finance) • [💬 Discord](https://discord.gg/yieldmind) • [🐦 Twitter](https://twitter.com/yieldmind)
 
 </div>
 
 ---
-
-
-
-<img width="1919" height="1079" alt="Screenshot 2025-10-15 010107" src="https://github.com/user-attachments/assets/6a7be509-b0e3-4158-9d7c-d65b39d11b0f" />
-
 
 ## 🌟 Overview
 
