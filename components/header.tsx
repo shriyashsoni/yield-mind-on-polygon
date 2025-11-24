@@ -50,8 +50,19 @@ export function Header() {
             }`}
           >
             Wave 2
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
-              NEW
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold">
+              UPDATED
+            </span>
+          </Link>
+          <Link
+            href="/release/wave-3"
+            className={`text-sm transition-colors flex items-center gap-1 ${
+              pathname === "/release/wave-3" ? "text-cyan-400 font-medium" : "text-foreground hover:text-cyan-400"
+            }`}
+          >
+            Wave 3
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-[10px] font-bold">
+              LIVE
             </span>
           </Link>
           <Link

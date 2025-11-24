@@ -16,6 +16,10 @@ import {
   Lock,
   Activity,
   Vote,
+  LineChart,
+  Workflow,
+  Network,
+  Globe,
 } from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -248,6 +252,117 @@ export default function HomePage() {
                 </Button>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Latest Updates Section - Wave 3 */}
+      <section className="py-24 bg-gradient-to-br from-cyan-500/5 via-teal-500/5 to-background border-y border-border">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-4">
+              <Rocket className="w-4 h-4 text-cyan-400 animate-bounce" />
+              <span className="text-sm font-medium bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                Wave 3 - Production Ready
+              </span>
+            </div>
+            <h2 className="text-4xl font-bold mb-4">🚀 Next-Generation Features</h2>
+            <p className="text-lg text-muted-foreground text-balance">
+              Advanced AI forecasting, multi-asset vaults, cross-chain support, and autonomous rebalancing
+            </p>
+            <div className="mt-6">
+              <Link
+                href="/release/wave-3"
+                className="inline-flex items-center gap-2 text-cyan-400 hover:underline font-medium"
+              >
+                <Sparkles className="w-4 h-4" />
+                Explore Wave 3 Features
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+            {/* AI Engine v3 */}
+            <Card className="border-2 border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-background hover:border-cyan-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-cyan-400" />
+                </div>
+                <h3 className="text-xl font-bold">AI Engine v3</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  7-day forecasting, risk scoring (0-100), sentiment analysis, and explainable AI recommendations
+                </p>
+                <div className="flex items-center gap-2 text-xs text-cyan-400 font-medium">
+                  <LineChart className="w-3 h-3" />
+                  <span>Predictive Analytics</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* YieldVault v3 */}
+            <Card className="border-2 border-teal-500/30 bg-gradient-to-br from-teal-500/10 to-background hover:border-teal-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500/20 to-teal-500/10 flex items-center justify-center">
+                  <Lock className="w-6 h-6 text-teal-400" />
+                </div>
+                <h3 className="text-xl font-bold">YieldVault v3</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Multi-asset support (USDC, DAI, ETH), time-weighted rebalancing, dynamic fees, insurance buffer
+                </p>
+                <div className="flex items-center gap-2 text-xs text-teal-400 font-medium">
+                  <Shield className="w-3 h-3" />
+                  <span>Multi-Asset</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Autonomous Mode */}
+            <Card className="border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-background hover:border-emerald-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 flex items-center justify-center">
+                  <Workflow className="w-6 h-6 text-emerald-400" />
+                </div>
+                <h3 className="text-xl font-bold">Autonomous Mode</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Fully automated rebalancing with Chainlink Automation, volatility triggers, and emergency fail-safes
+                </p>
+                <div className="flex items-center gap-2 text-xs text-emerald-400 font-medium">
+                  <Zap className="w-3 h-3" />
+                  <span>Automated</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Cross-Chain */}
+            <Card className="border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-background hover:border-blue-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center">
+                  <Network className="w-6 h-6 text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold">Cross-Chain</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  LayerZero integration for Polygon, Base, and Arbitrum with seamless cross-chain vaults
+                </p>
+                <div className="flex items-center gap-2 text-xs text-blue-400 font-medium">
+                  <Globe className="w-3 h-3" />
+                  <span>3 Chains</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button
+              size="lg"
+              className="gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white"
+              asChild
+            >
+              <Link href="/release/wave-3">
+                View All Wave 3 Features
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

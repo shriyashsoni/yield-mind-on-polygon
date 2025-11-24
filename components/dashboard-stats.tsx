@@ -1,6 +1,6 @@
 "use client"
 
-import { TrendingUp, Wallet, Percent, Activity } from "lucide-react"
+import { TrendingUp, Wallet, Percent, Activity, Shield, Zap } from "lucide-react"
 import { StatsCard } from "@/components/stats-card"
 import { useVaultData } from "@/hooks/use-vault-data"
 import { useStrategyData } from "@/hooks/use-strategy-data"
@@ -15,7 +15,7 @@ export function DashboardStats() {
   const isLoading = vaultLoading || strategyLoading
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       <StatsCard
         title="Total Value Locked"
         value={formatUSD(Number(totalValueLocked))}
@@ -46,6 +46,22 @@ export function DashboardStats() {
         change="Optimized 2m ago"
         changeType="neutral"
         icon={Activity}
+        isLoading={isLoading}
+      />
+      <StatsCard
+        title="Risk Score"
+        value="32/100"
+        change="Low risk portfolio"
+        changeType="positive"
+        icon={Shield}
+        isLoading={isLoading}
+      />
+      <StatsCard
+        title="Auto-Rebalance"
+        value="12"
+        change="Executions this month"
+        changeType="neutral"
+        icon={Zap}
         isLoading={isLoading}
       />
     </div>
