@@ -32,12 +32,20 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [chainId, setChainId] = useState<number | null>(null)
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null)
   const [signer, setSigner] = useState<ethers.Signer | null>(null)
+  const [isConnecting, setIsConnecting] = useState(false)
 
   const connect = useCallback(async () => {
+    if (isConnecting) {
+      console.log("[v0] Connection already in progress, skipping...")
+      return
+    }
+
     console.log("[v0] Attempting to connect wallet...")
+    setIsConnecting(true)
 
     if (typeof window === "undefined") {
       console.error("[v0] Window is undefined - not in browser environment")
+      setIsConnecting(false)
       return
     }
 
@@ -46,6 +54,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       toast.error("No Web3 Wallet Detected", {
         description: "Please install MetaMask or another Web3 wallet extension to connect.",
       })
+      setIsConnecting(false)
       return
     }
 
@@ -61,6 +70,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         toast.error("Connection Failed", {
           description: "No accounts found. Please unlock your wallet and try again.",
         })
+        setIsConnecting(false)
         return
       }
 
@@ -95,8 +105,10 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
           description: error.message || "Failed to connect wallet. Please try again.",
         })
       }
+    } finally {
+      setIsConnecting(false)
     }
-  }, [])
+  }, [isConnecting])
 
   const disconnect = useCallback(() => {
     console.log("[v0] Disconnecting wallet...")
@@ -180,12 +192,14 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window === "undefined" || !window.ethereum) return
 
+    let mounted = true
+
     const checkConnection = async () => {
       try {
         const ethersProvider = new ethers.BrowserProvider(window.ethereum)
         const accounts = await ethersProvider.listAccounts()
 
-        if (accounts.length > 0) {
+        if (accounts.length > 0 && mounted) {
           console.log("[v0] Found existing connection, reconnecting...")
           const network = await ethersProvider.getNetwork()
           const ethSigner = await ethersProvider.getSigner()
@@ -201,28 +215,54 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     }
 
     checkConnection()
+
+    return () => {
+      mounted = false
+    }
   }, [])
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.ethereum) return
 
-    const handleAccountsChanged = (accounts: string[]) => {
+    const handleAccountsChanged = async (accounts: string[]) => {
       console.log("[v0] Accounts changed:", accounts)
       if (accounts.length === 0) {
         disconnect()
-      } else {
-        setAddress(accounts[0])
-        toast.info("Account Changed", {
-          description: `Switched to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`,
-        })
+      } else if (accounts[0] !== address) {
+        try {
+          const ethersProvider = new ethers.BrowserProvider(window.ethereum)
+          const ethSigner = await ethersProvider.getSigner()
+          setProvider(ethersProvider)
+          setSigner(ethSigner)
+          setAddress(accounts[0])
+          toast.info("Account Changed", {
+            description: `Switched to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`,
+          })
+        } catch (error) {
+          console.error("[v0] Failed to update account:", error)
+        }
       }
     }
 
-    const handleChainChanged = (chainIdHex: string) => {
+    const handleChainChanged = async (chainIdHex: string) => {
       const newChainId = Number.parseInt(chainIdHex, 16)
       console.log("[v0] Chain changed to:", newChainId)
-      setChainId(newChainId)
-      window.location.reload()
+
+      try {
+        const ethersProvider = new ethers.BrowserProvider(window.ethereum)
+        const network = await ethersProvider.getNetwork()
+        const ethSigner = await ethersProvider.getSigner()
+
+        setProvider(ethersProvider)
+        setSigner(ethSigner)
+        setChainId(Number(network.chainId))
+
+        toast.info("Network Changed", {
+          description: `Switched to ${newChainId === 137 ? "Polygon Mainnet" : newChainId === 80002 ? "Polygon Amoy" : `Chain ${newChainId}`}`,
+        })
+      } catch (error) {
+        console.error("[v0] Failed to update chain:", error)
+      }
     }
 
     window.ethereum.on("accountsChanged", handleAccountsChanged)
@@ -232,7 +272,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       window.ethereum?.removeListener("accountsChanged", handleAccountsChanged)
       window.ethereum?.removeListener("chainChanged", handleChainChanged)
     }
-  }, [disconnect])
+  }, [disconnect, address])
 
   return (
     <Web3Context.Provider
