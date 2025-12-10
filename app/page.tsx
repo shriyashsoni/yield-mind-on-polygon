@@ -20,6 +20,7 @@ import {
   Workflow,
   Network,
   Globe,
+  Layers,
 } from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/header"
@@ -360,6 +361,117 @@ export default function HomePage() {
             >
               <Link href="/release/wave-3">
                 View All Wave 3 Features
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Wave 4 Section */}
+      <section className="py-24 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-background border-y border-border">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 mb-4 animate-pulse">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span className="text-sm font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Wave 4 - Global Scaling
+              </span>
+            </div>
+            <h2 className="text-4xl font-bold mb-4">Global Multi-Chain Platform</h2>
+            <p className="text-lg text-muted-foreground text-balance">
+              Meta-ensemble AI, multi-vault system, institutional analytics, and worldwide scaling
+            </p>
+            <div className="mt-6">
+              <Link
+                href="/release/wave-4"
+                className="inline-flex items-center gap-2 text-purple-400 hover:underline font-medium"
+              >
+                <Rocket className="w-4 h-4" />
+                Explore Wave 4 Features
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
+            {/* AI Engine v4 */}
+            <Card className="border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-background hover:border-purple-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-500/10 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="text-xl font-bold">AI Engine v4.0</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Meta-ensemble architecture with LSTM, TFT, XGBoost, and Transformer models achieving 95%+ accuracy
+                </p>
+                <div className="flex items-center gap-2 text-xs text-purple-400 font-medium">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Meta-Ensemble AI</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Multi-Vault */}
+            <Card className="border-2 border-pink-500/30 bg-gradient-to-br from-pink-500/10 to-background hover:border-pink-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500/20 to-pink-500/10 flex items-center justify-center">
+                  <Layers className="w-6 h-6 text-pink-400" />
+                </div>
+                <h3 className="text-xl font-bold">Multi-Vault System</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Stable, ETH Momentum, Polygon Ecosystem, and High-APY vaults with separate AI models and risk profiles
+                </p>
+                <div className="flex items-center gap-2 text-xs text-pink-400 font-medium">
+                  <Lock className="w-3 h-3" />
+                  <span>4 Vault Types</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Cross-Chain Expansion */}
+            <Card className="border-2 border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-background hover:border-violet-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-violet-500/20 to-violet-500/10 flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-violet-400" />
+                </div>
+                <h3 className="text-xl font-bold">Cross-Chain Expansion</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Polygon, Base, Arbitrum, Optimism support with LayerZero V2 for seamless multi-chain rebalancing
+                </p>
+                <div className="flex items-center gap-2 text-xs text-violet-400 font-medium">
+                  <Network className="w-3 h-3" />
+                  <span>5+ Chains</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Institutional Analytics */}
+            <Card className="border-2 border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-500/10 to-background hover:border-fuchsia-500/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-fuchsia-500/20 to-fuchsia-500/10 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-fuchsia-400" />
+                </div>
+                <h3 className="text-xl font-bold">Institutional Analytics</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Advanced dashboard with Sharpe ratios, drawdown curves, AI reasoning, and event monitoring
+                </p>
+                <div className="flex items-center gap-2 text-xs text-fuchsia-400 font-medium">
+                  <TrendingUp className="w-3 h-3" />
+                  <span>Enterprise Grade</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button
+              size="lg"
+              className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              asChild
+            >
+              <Link href="/release/wave-4">
+                View All Wave 4 Features
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>

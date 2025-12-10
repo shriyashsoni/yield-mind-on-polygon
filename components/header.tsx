@@ -66,6 +66,17 @@ export function Header() {
             </span>
           </Link>
           <Link
+            href="/release/wave-4"
+            className={`text-sm transition-colors flex items-center gap-1 ${
+              pathname === "/release/wave-4" ? "text-purple-400 font-medium" : "text-foreground hover:text-purple-400"
+            }`}
+          >
+            Wave 4
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold animate-pulse">
+              NEW
+            </span>
+          </Link>
+          <Link
             href="/whitepaper"
             className={`text-sm transition-colors ${
               pathname === "/whitepaper" ? "text-primary font-medium" : "text-foreground hover:text-primary"

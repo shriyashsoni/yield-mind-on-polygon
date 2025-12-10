@@ -1,0 +1,81 @@
+import { NextResponse } from "next/server"
+
+export async function GET() {
+  // Demo data for Wave 4 cross-chain support
+  const chains = [
+    {
+      chainId: 137,
+      name: "Polygon",
+      symbol: "MATIC",
+      status: "active",
+      tvl: 28500000,
+      protocols: ["QuickSwap", "Balancer", "Aave V3", "Curve"],
+      vaults: 4,
+      avgAPY: 20.2,
+      gasPrice: "35 gwei",
+      bridgeSupport: true,
+      blockTime: 2,
+    },
+    {
+      chainId: 8453,
+      name: "Base",
+      symbol: "ETH",
+      status: "active",
+      tvl: 12300000,
+      protocols: ["Uniswap V3", "Aerodrome", "Aave V3", "Moonwell"],
+      vaults: 3,
+      avgAPY: 18.4,
+      gasPrice: "0.05 gwei",
+      bridgeSupport: true,
+      blockTime: 2,
+    },
+    {
+      chainId: 42161,
+      name: "Arbitrum",
+      symbol: "ETH",
+      status: "active",
+      tvl: 15700000,
+      protocols: ["Uniswap V3", "Balancer", "Aave V3", "GMX"],
+      vaults: 3,
+      avgAPY: 21.8,
+      gasPrice: "0.1 gwei",
+      bridgeSupport: true,
+      blockTime: 1,
+    },
+    {
+      chainId: 10,
+      name: "Optimism",
+      symbol: "ETH",
+      status: "coming-soon",
+      tvl: 0,
+      protocols: ["Velodrome", "Aave V3", "Uniswap V3"],
+      vaults: 0,
+      avgAPY: 0,
+      gasPrice: "0.001 gwei",
+      bridgeSupport: true,
+      blockTime: 2,
+    },
+    {
+      chainId: 1,
+      name: "Ethereum",
+      symbol: "ETH",
+      status: "planned",
+      tvl: 0,
+      protocols: ["Uniswap V3", "Balancer", "Aave V3", "Curve"],
+      vaults: 0,
+      avgAPY: 0,
+      gasPrice: "30 gwei",
+      bridgeSupport: true,
+      blockTime: 12,
+    },
+  ]
+
+  return NextResponse.json({
+    chains,
+    totalChains: chains.filter((c) => c.status === "active").length,
+    totalTVL: chains.reduce((sum, c) => sum + c.tvl, 0),
+    totalVaults: chains.reduce((sum, c) => sum + c.vaults, 0),
+    crossChainSupport: "LayerZero V2",
+    timestamp: Date.now(),
+  })
+}
