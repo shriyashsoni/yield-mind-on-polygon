@@ -44,36 +44,14 @@ export function Header() {
             Docs
           </Link>
           <Link
-            href="/release/wave-2"
+            href="/release"
             className={`text-sm transition-colors flex items-center gap-1 ${
-              pathname === "/release/wave-2" ? "text-primary font-medium" : "text-foreground hover:text-primary"
+              pathname === "/release" ? "text-primary font-medium" : "text-foreground hover:text-primary"
             }`}
           >
-            Wave 2
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold">
-              UPDATED
-            </span>
-          </Link>
-          <Link
-            href="/release/wave-3"
-            className={`text-sm transition-colors flex items-center gap-1 ${
-              pathname === "/release/wave-3" ? "text-cyan-400 font-medium" : "text-foreground hover:text-cyan-400"
-            }`}
-          >
-            Wave 3
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white text-[10px] font-bold">
-              LIVE
-            </span>
-          </Link>
-          <Link
-            href="/release/wave-4"
-            className={`text-sm transition-colors flex items-center gap-1 ${
-              pathname === "/release/wave-4" ? "text-purple-400 font-medium" : "text-foreground hover:text-purple-400"
-            }`}
-          >
-            Wave 4
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold animate-pulse">
-              NEW
+            Releases
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-[10px] font-bold animate-pulse">
+              WAVE 5
             </span>
           </Link>
           <Link
