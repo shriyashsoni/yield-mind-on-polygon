@@ -2,7 +2,7 @@
 
 import { useWeb3 } from "@/lib/web3-context"
 import { Button } from "@/components/ui/button"
-import { Wallet, LogOut, AlertCircle } from "lucide-react"
+import { Wallet, LogOut, AlertCircle, CheckCircle2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +16,11 @@ import { Badge } from "@/components/ui/badge"
 export function WalletConnectButton() {
   const { address, isConnected, chainId, connect, disconnect, switchNetwork } = useWeb3()
 
-  const isCorrectNetwork = chainId === 137 || chainId === 80002
-  const currentChain = chainId === 137 ? "Polygon" : chainId === 80002 ? "Amoy" : "Unknown"
+  const isMainnet = chainId === 137
+  const isTestnet = chainId === 80002
+  const isCorrectNetwork = isMainnet || isTestnet
+  const currentChain = isMainnet ? "Polygon Mainnet" : isTestnet ? "Amoy Testnet" : "Unknown"
+  const chainBadgeVariant = isMainnet ? "default" : isTestnet ? "secondary" : "destructive"
 
   if (!isConnected) {
     return (
@@ -33,8 +36,14 @@ export function WalletConnectButton() {
       {!isCorrectNetwork && (
         <Button variant="destructive" size="sm" onClick={() => switchNetwork(137)} className="gap-2">
           <AlertCircle className="w-4 h-4" />
-          Switch to Polygon
+          Switch Network
         </Button>
+      )}
+      {isCorrectNetwork && (
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 text-xs text-green-700">
+          <CheckCircle2 className="w-3 h-3" />
+          <span>Connected</span>
+        </div>
       )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -43,8 +52,8 @@ export function WalletConnectButton() {
             <span className="hidden sm:inline">
               {address?.slice(0, 6)}...{address?.slice(-4)}
             </span>
-            <Badge variant="secondary" className="ml-1">
-              {currentChain}
+            <Badge variant={chainBadgeVariant} className="ml-1">
+              {isTestnet ? "Testnet" : "Mainnet"}
             </Badge>
           </Button>
         </DropdownMenuTrigger>
@@ -53,11 +62,22 @@ export function WalletConnectButton() {
           <DropdownMenuSeparator />
           <DropdownMenuItem className="font-mono text-xs">{address}</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => switchNetwork(137)} className="cursor-pointer">
-            Switch to Polygon Mainnet
+          <DropdownMenuLabel className="text-xs">Network</DropdownMenuLabel>
+          <DropdownMenuItem 
+            onClick={() => switchNetwork(137)} 
+            className="cursor-pointer"
+            disabled={isMainnet}
+          >
+            {isMainnet && <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />}
+            Polygon Mainnet (137)
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => switchNetwork(80002)} className="cursor-pointer">
-            Switch to Amoy Testnet
+          <DropdownMenuItem 
+            onClick={() => switchNetwork(80002)} 
+            className="cursor-pointer"
+            disabled={isTestnet}
+          >
+            {isTestnet && <CheckCircle2 className="w-4 h-4 mr-2 text-green-500" />}
+            Amoy Testnet (80002)
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={disconnect} className="cursor-pointer text-destructive">

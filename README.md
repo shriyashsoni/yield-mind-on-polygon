@@ -50,6 +50,48 @@ Democratize institutional-grade yield optimization by providing retail users wit
 
 ---
 
+## 🌊 Wave Releases
+
+### Wave 5: Production Launch (Current)
+**Status**: Testnet Live | Mainnet Coming Soon
+
+The complete transformation of YieldMind into institutional-grade DeFi infrastructure:
+
+#### Key Features:
+- **AI Engine v4 (Final)**: Production-ready with continuous model validation
+- **Institutional Analytics Suite**: Yield curves, volatility metrics, Sharpe/Sortino ratios
+- **Multi-Vault System**: 4 specialized vaults (Stable Yield, ETH Momentum, Polygon Ecosystem, Adaptive High-APY)
+- **Full DAO Governance**: On-chain proposals, treasury control, staking-based voting
+- **Production Security**: Professional audits, Tenderly monitoring, oracle checks
+- **Enhanced Wallet Integration**: Seamless Polygon Mainnet (137) & Amoy Testnet (80002) support
+- **Testnet Environment**: Safe testing on Polygon Amoy with faucet access
+
+#### Network Support:
+- **Polygon Mainnet** (Chain ID: 137) - Production environment
+- **Polygon Amoy** (Chain ID: 80002) - Testnet environment
+
+#### New Testing Features:
+- Live testing mode with simulated capital
+- API sandbox endpoints for developers
+- Automatic Wave 4 to Wave 5 vault position migration
+- Complete testnet replica of production
+
+---
+
+### Wave 4: Enhanced Autonomy
+Advanced autonomous rebalancing and cross-chain optimization capabilities.
+
+### Wave 3: Core Infrastructure
+DAO governance, institutional analytics, and multi-protocol support foundation.
+
+### Wave 2: ML Integration
+Machine learning recommendations and advanced yield strategies.
+
+### Wave 1: Foundation
+Initial YieldMind launch with basic vault and single-strategy optimization.
+
+---
+
 ## 📊 Overview
 
 YieldMind is a decentralized yield farming optimization platform that uses machine learning to automatically allocate capital across the highest-yielding DeFi protocols. Our AI engine analyzes thousands of data points in real-time to maximize returns while minimizing risk.
