@@ -11,6 +11,7 @@ import { MLRecommendations } from "@/components/ml-recommendations"
 import { PerformanceMetrics } from "@/components/performance-metrics"
 import { NetworkSwitcher } from "@/components/network-switcher"
 import { TransactionHistory } from "@/components/transaction-history"
+import { TransactionInterface } from "@/components/transaction-interface"
 import { DashboardStats } from "@/components/dashboard-stats"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -51,20 +52,19 @@ export default function DashboardPage() {
       <Header />
       <Navigation />
       <main className="container mx-auto px-4 py-8 space-y-8">
-        <HeroSection />
-        <NetworkSwitcher />
         <DashboardStats />
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <VaultOverview />
-            <PerformanceMetrics />
-            <TransactionHistory />
-          </div>
-          <div className="space-y-6">
-            <MLRecommendations />
             <StrategyAllocation />
           </div>
+          <div>
+            <MLRecommendations />
+          </div>
         </div>
+        <PerformanceMetrics />
+        <TransactionInterface />
+        <TransactionHistory />
       </main>
     </div>
   )
