@@ -1,0 +1,242 @@
+# YieldMind Wave 6 Smart Contract Deployment Guide
+
+## Overview
+
+YieldMind Wave 6 consists of 10 interconnected smart contracts deployed on Polygon Amoy Testnet (Chain ID: 80002).
+
+### Network Information
+- **Network**: Polygon Amoy
+- **Chain ID**: 80002
+- **RPC Endpoint**: https://rpc-amoy.polygon.technology/
+- **Explorer**: https://amoy.polygonscan.com
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│          YieldMind Wave 6 Smart Contract Stack          │
+├─────────────────────────────────────────────────────────┤
+│  Core Layer                                              │
+│  ├─ YLDToken (ERC20)                                    │
+│  ├─ YieldVaultV4 (Main Vault)                           │
+│  └─ RiskGuard (Risk Management)                         │
+├─────────────────────────────────────────────────────────┤
+│  Intelligence Layer                                      │
+│  ├─ AIOracle (Price & Forecast)                         │
+│  └─ StrategyManager (Strategy Execution)                │
+├─────────────────────────────────────────────────────────┤
+│  Governance Layer                                        │
+│  ├─ YieldMindGovernor (DAO Voting)                      │
+│  ├─ YLDStaking (Staking Rewards)                        │
+│  └─ TimelockController (Time-Locked Execution)         │
+├─────────────────────────────────────────────────────────┤
+│  Safety & Automation Layer                              │
+│  ├─ InsuranceReserve (Protection Pool)                  │
+│  └─ AutonomousExecutor (Automated Operations)           │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Deployment Status
+
+### ✅ Deployed Contracts (3/10)
+
+1. **YLDToken**
+   - Address: `0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c`
+   - Type: ERC20 Token
+   - View on PolygonScan: https://amoy.polygonscan.com/address/0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c
+
+2. **YieldVaultV4**
+   - Address: `0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3`
+   - Type: Core Vault
+   - View on PolygonScan: https://amoy.polygonscan.com/address/0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3
+
+3. **RiskGuard**
+   - Address: `0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A`
+   - Type: Risk Management
+   - View on PolygonScan: https://amoy.polygonscan.com/address/0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A
+
+### ⏳ Pending Deployment (7/10)
+
+1. StrategyManager - Strategy execution and management
+2. AIOracle - AI-powered price forecasting
+3. InsuranceReserve - Insurance protection pool
+4. YieldMindGovernor - DAO governance
+5. YLDStaking - Staking contract
+6. TimelockController - Time-locked execution
+7. AutonomousExecutor - Autonomous rebalancing
+
+## Setup Instructions
+
+### Prerequisites
+
+```bash
+# Clone smart contract repository
+git clone https://github.com/shriyashsoni/yelid-mind-smart-contract.git
+cd yelid-mind-smart-contract
+
+# Install dependencies
+npm install
+
+# Copy environment configuration
+cp .env.example .env
+```
+
+### Environment Variables
+
+Create `.env` file with:
+
+```env
+PRIVATE_KEY=your_private_key_here
+RPC_URL=https://rpc-amoy.polygon.technology/
+ETHERSCAN_API_KEY=your_etherscan_key
+DEPLOYER_ADDRESS=your_wallet_address
+```
+
+### Compilation
+
+```bash
+npm run build
+# or
+npm run compile
+```
+
+### Deployment
+
+```bash
+# Deploy all contracts to Amoy testnet
+npm run deploy:amoy
+
+# Deploy specific contract
+npm run deploy:amoy -- --contract YieldVaultV4
+```
+
+## Integration with Frontend
+
+### 1. Update Contract Addresses
+
+File: `lib/contract-abis.ts`
+
+```typescript
+export const CONTRACT_ADDRESSES = {
+  AMOY: {
+    YLDToken: '0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c',
+    YieldVaultV4: '0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3',
+    RiskGuard: '0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A',
+    // Add newly deployed contracts here
+  },
+};
+```
+
+### 2. Update Configuration
+
+File: `lib/deployment-config.ts`
+
+```typescript
+export const DEPLOYMENT_CONFIG = {
+  network: {
+    name: 'Polygon Amoy',
+    chainId: 80002,
+    rpcUrl: 'https://rpc-amoy.polygon.technology/',
+    explorerUrl: 'https://amoy.polygonscan.com',
+  },
+  // ... rest of config
+};
+```
+
+### 3. Contract Interaction
+
+Use the provided hooks:
+
+```typescript
+import { useContractRead, useContractWrite } from '@/hooks/use-contract-interaction';
+
+// Reading contract data
+const { data, isLoading } = useContractRead({
+  address: CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+  abi: YIELD_VAULT_V4_ABI,
+  functionName: 'getTotalAssets',
+});
+
+// Writing to contract
+const { write, isLoading } = useContractWrite({
+  address: CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+  abi: YIELD_VAULT_V4_ABI,
+  functionName: 'deposit',
+});
+```
+
+## Contract Verification
+
+After deployment, verify contracts on PolygonScan:
+
+```bash
+npx hardhat verify --network amoy <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGUMENTS>
+```
+
+Example:
+```bash
+npx hardhat verify --network amoy 0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c
+```
+
+## Testing
+
+### Local Testing
+
+```bash
+npm run test
+```
+
+### Testnet Testing
+
+```bash
+npm run test:amoy
+```
+
+## Dashboard Integration
+
+The YieldMind dashboard automatically displays:
+
+- ✅ Deployed contract status
+- 🎯 Contract addresses and links
+- 📊 Protocol metrics and analytics
+- ⚙️ Contract interactions
+- 📈 Performance data
+
+Access the dashboard at: `/dashboard`
+
+## Troubleshooting
+
+### Contract Not Deploying
+
+1. Check private key in `.env`
+2. Verify wallet has MATIC tokens for gas fees
+3. Check RPC endpoint availability
+4. Review deployment logs for specific errors
+
+### Interaction Errors
+
+1. Ensure network is set to Polygon Amoy (80002)
+2. Verify contract addresses are correct
+3. Check wallet balance for gas fees
+4. Review contract state requirements
+
+### PolygonScan Verification Issues
+
+1. Ensure source code is public on GitHub
+2. Use correct constructor arguments
+3. Match compiler version
+4. Enable contract optimization settings
+
+## Support
+
+- Smart Contract Repo: https://github.com/shriyashsoni/yelid-mind-smart-contract
+- PolygonScan: https://amoy.polygonscan.com
+- Documentation: `/docs`
+
+## Next Steps
+
+1. Deploy remaining 7 contracts in order
+2. Verify all contracts on PolygonScan
+3. Test contract interactions via dashboard
+4. Monitor protocol health metrics
+5. Enable autonomous execution mode
