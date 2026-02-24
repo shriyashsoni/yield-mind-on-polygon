@@ -6,6 +6,7 @@ import { Header } from '@/components/header';
 import { Navigation } from '@/components/navigation';
 import { useVaultData } from '@/hooks/use-vault-data';
 import { useStrategyData } from '@/hooks/use-strategy-data';
+import { useUserActivity } from '@/hooks/use-user-activity';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,6 +15,7 @@ import { DeploymentDashboard } from '@/components/deployment-dashboard';
 import { DashboardStats } from '@/components/dashboard-stats';
 import { VaultOverview } from '@/components/vault-overview';
 import { DEPLOYED_CONTRACTS, getDeployedContracts } from '@/lib/contract-utils';
+import { getVaultProductAddress, isDeployedAddress } from '@/lib/contracts';
 import {
   Wallet,
   TrendingUp,
@@ -27,8 +29,9 @@ import {
 
 export default function DashboardPage() {
   const { address, isConnected, chainId } = useWeb3();
-  const { totalValueLocked } = useVaultData();
+  const { totalValueLocked, usdcBalance, assetSymbol, userBalance } = useVaultData();
   const { strategies } = useStrategyData();
+  const { activities } = useUserActivity();
   const [activeTab, setActiveTab] = useState('overview');
   const [metrics, setMetrics] = useState({
     totalVolumeDeployed: '$0',
@@ -73,6 +76,38 @@ export default function DashboardPage() {
   }
 
   const isValidChain = chainId === 80002; // Polygon Amoy
+  const explorerBaseUrl = chainId === 137 ? 'https://polygonscan.com/tx/' : 'https://amoy.polygonscan.com/tx/';
+  const vaultGroups = [
+    { key: 'low', label: 'Conservative Vault' },
+    { key: 'medium', label: 'Balanced Vault' },
+    { key: 'high', label: 'Aggressive Vault' },
+  ] as const;
+
+  const toAmount = (value: string) => Number.parseFloat(value) || 0;
+
+  const vaultMetrics = vaultGroups.map((group) => {
+    const vaultAddress = getVaultProductAddress(chainId, group.key);
+    const byAddress = activities.filter((item) => item.vaultAddress?.toLowerCase() === vaultAddress.toLowerCase());
+    const byName = activities.filter((item) => item.vaultName === group.label);
+    const merged = byName.length > byAddress.length ? byName : byAddress;
+
+    const deposited = merged
+      .filter((item) => item.type === 'deposit')
+      .reduce((sum, item) => sum + toAmount(item.amount), 0);
+    const withdrawn = merged
+      .filter((item) => item.type === 'withdraw')
+      .reduce((sum, item) => sum + toAmount(item.amount), 0);
+
+    return {
+      ...group,
+      vaultAddress,
+      txCount: merged.length,
+      deposited,
+      withdrawn,
+      netFlow: deposited - withdrawn,
+      recent: merged.slice(0, 3),
+    };
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,6 +142,12 @@ export default function DashboardPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Wallet Address</p>
                 <p className="font-mono text-sm font-semibold">{address}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Asset Balance: {Number(usdcBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })} {assetSymbol}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  In Vault: {Number(userBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })} {assetSymbol}
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Network</p>
@@ -186,6 +227,91 @@ export default function DashboardPage() {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             <VaultOverview />
+            <Card>
+              <CardHeader>
+                <CardTitle>Vault Product Breakdown</CardTitle>
+                <CardDescription>Per-vault activity and flow metrics for Low, Medium, and High risk vaults</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {vaultMetrics.map((vault) => (
+                    <div key={vault.key} className="p-4 border rounded-lg space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-semibold">{vault.label}</p>
+                        <Badge variant={isDeployedAddress(vault.vaultAddress) ? 'default' : 'secondary'}>
+                          {isDeployedAddress(vault.vaultAddress) ? 'Active' : 'Not Deployed'}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-mono break-all">{vault.vaultAddress}</p>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Transactions</p>
+                          <p className="font-bold">{vault.txCount}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Net Flow</p>
+                          <p className={`font-bold ${vault.netFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {vault.netFlow >= 0 ? '+' : ''}
+                            {vault.netFlow.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Deposited</p>
+                          <p className="font-medium">{vault.deposited.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Withdrawn</p>
+                          <p className="font-medium">{vault.withdrawn.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>Latest deposits and withdrawals from this wallet</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {activities.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No activity yet. Deposit from Products or Vault Overview.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {vaultMetrics.map((vault) => (
+                      <div key={vault.key} className="space-y-2">
+                        <p className="text-sm font-semibold">{vault.label}</p>
+                        {vault.recent.length === 0 ? (
+                          <p className="text-xs text-muted-foreground">No activity</p>
+                        ) : (
+                          vault.recent.map((activity) => (
+                            <div key={activity.id} className="p-3 border rounded-lg flex items-center justify-between gap-3">
+                              <div>
+                                <p className="font-medium">
+                                  {activity.type === 'deposit' ? 'Deposit' : 'Withdrawal'} {activity.amount} {activity.assetSymbol}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {new Date(activity.timestamp).toLocaleString()}
+                                </p>
+                              </div>
+                              <a
+                                href={`${explorerBaseUrl}${activity.txHash}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs text-primary hover:underline"
+                              >
+                                {activity.txHash.slice(0, 6)}...{activity.txHash.slice(-4)}
+                              </a>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Wave 6 Protocol Overview</CardTitle>

@@ -4,6 +4,7 @@ import { useWeb3 } from "@/lib/web3-context"
 import { useQuery } from "@tanstack/react-query"
 import { CONTRACTS, STRATEGY_MANAGER_ABI, isDeployedAddress } from "@/lib/contracts"
 import { DEMO_STRATEGIES } from "@/lib/demo-data"
+import { ethers } from "ethers"
 
 export interface Strategy {
   address: string

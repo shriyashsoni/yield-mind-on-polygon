@@ -1,16 +1,39 @@
 "use client"
 
+import { useState } from "react"
 import { useWeb3 } from "@/lib/web3-context"
+import { useVaultActions } from "@/hooks/use-vault-actions"
+import { useVaultData } from "@/hooks/use-vault-data"
+import { getVaultProductAddress, isDeployedAddress } from "@/lib/contracts"
 import { Header } from "@/components/header"
 import { Navigation } from "@/components/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, Shield, Zap, Lock } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { TrendingUp, Shield, Zap, Lock, Loader2 } from "lucide-react"
 import { WalletConnectButton } from "@/components/wallet-connect-button"
+import { toast } from "sonner"
 
-const products = [
+type ProductRiskKey = "low" | "medium" | "high"
+
+interface ProductCard {
+  riskKey: ProductRiskKey
+  name: string
+  apy: string
+  tvl: string
+  risk: "Low" | "Medium" | "High"
+  description: string
+  strategies: string[]
+  icon: typeof Shield
+  color: string
+}
+
+const products: ProductCard[] = [
   {
+    riskKey: "low",
     name: "Conservative Vault",
     apy: "8.5%",
     tvl: "$2.4M",
@@ -21,6 +44,7 @@ const products = [
     color: "text-green-500",
   },
   {
+    riskKey: "medium",
     name: "Balanced Vault",
     apy: "15.2%",
     tvl: "$5.8M",
@@ -31,6 +55,7 @@ const products = [
     color: "text-blue-500",
   },
   {
+    riskKey: "high",
     name: "Aggressive Vault",
     apy: "28.7%",
     tvl: "$1.2M",
@@ -43,7 +68,44 @@ const products = [
 ]
 
 export default function ProductsPage() {
-  const { isConnected } = useWeb3()
+  const { isConnected, chainId } = useWeb3()
+  const { deposit, isDepositPending } = useVaultActions()
+  const { assetSymbol, usdcBalance } = useVaultData()
+  const [selectedVault, setSelectedVault] = useState<ProductCard | null>(null)
+  const [depositAmount, setDepositAmount] = useState("")
+
+  const openDepositDialog = (product: ProductCard) => {
+    setSelectedVault(product)
+    setDepositAmount("")
+  }
+
+  const closeDialog = () => {
+    if (isDepositPending) return
+    setSelectedVault(null)
+    setDepositAmount("")
+  }
+
+  const handleDeposit = async () => {
+    if (!selectedVault) return
+
+    if (!depositAmount || Number(depositAmount) <= 0) {
+      toast.error("Please enter a valid deposit amount")
+      return
+    }
+
+    try {
+      const vaultAddress = getVaultProductAddress(chainId, selectedVault.riskKey)
+      if (!isDeployedAddress(vaultAddress)) {
+        toast.error("Selected vault is not deployed on this network")
+        return
+      }
+
+      await deposit(depositAmount, { vaultName: selectedVault.name, vaultAddress })
+      closeDialog()
+    } catch (error) {
+      console.error("[products] Deposit failed:", error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,6 +122,8 @@ export default function ProductsPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => {
             const Icon = product.icon
+            const productVaultAddress = getVaultProductAddress(chainId, product.riskKey)
+            const isVaultAvailable = isDeployedAddress(productVaultAddress)
             return (
               <Card key={product.name} className="flex flex-col">
                 <CardHeader>
@@ -100,9 +164,9 @@ export default function ProductsPage() {
                   </div>
 
                   {isConnected ? (
-                    <Button className="w-full mt-auto">
+                    <Button className="w-full mt-auto" onClick={() => openDepositDialog(product)} disabled={!isVaultAvailable}>
                       <Lock className="h-4 w-4 mr-2" />
-                      Deposit
+                      {isVaultAvailable ? "Deposit" : "Vault Unavailable"}
                     </Button>
                   ) : (
                     <div className="mt-auto">
@@ -114,6 +178,53 @@ export default function ProductsPage() {
             )
           })}
         </div>
+
+        <Dialog open={!!selectedVault} onOpenChange={(open) => (!open ? closeDialog() : null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Deposit to {selectedVault?.name}</DialogTitle>
+              <DialogDescription>
+                Enter amount to deposit into the vault contract. Your dashboard updates after confirmation.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-2">
+              <Label htmlFor="vault-deposit-amount">Amount ({assetSymbol})</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="vault-deposit-amount"
+                  type="number"
+                  placeholder="0.00"
+                  value={depositAmount}
+                  onChange={(event) => setDepositAmount(event.target.value)}
+                  disabled={isDepositPending}
+                />
+                <Button variant="outline" onClick={() => setDepositAmount(usdcBalance)} disabled={isDepositPending}>
+                  MAX
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Available: {Number(usdcBalance).toLocaleString()} {assetSymbol}
+              </p>
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={closeDialog} disabled={isDepositPending}>
+                Cancel
+              </Button>
+              <Button onClick={handleDeposit} disabled={isDepositPending || !depositAmount}>
+                {isDepositPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Confirm Deposit"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   )

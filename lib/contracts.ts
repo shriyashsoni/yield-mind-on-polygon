@@ -5,6 +5,11 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 export const CONTRACTS = {
   polygon: {
     vault: ZERO_ADDRESS,
+    vaultProducts: {
+      low: ZERO_ADDRESS,
+      medium: ZERO_ADDRESS,
+      high: ZERO_ADDRESS,
+    },
     oracle: ZERO_ADDRESS,
     riskGuard: ZERO_ADDRESS,
     strategyManager: ZERO_ADDRESS,
@@ -13,6 +18,11 @@ export const CONTRACTS = {
   },
   polygonAmoy: {
     vault: CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+    vaultProducts: {
+      low: CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+      medium: CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+      high: CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+    },
     oracle: CONTRACT_ADDRESSES.AMOY.AIOracle,
     riskGuard: CONTRACT_ADDRESSES.AMOY.RiskGuard,
     strategyManager: CONTRACT_ADDRESSES.AMOY.StrategyManager,
@@ -22,6 +32,11 @@ export const CONTRACTS = {
 } as const
 
 export const isDeployedAddress = (address: string) => address.toLowerCase() !== ZERO_ADDRESS
+
+export const getVaultProductAddress = (chainId: number | null, risk: "low" | "medium" | "high") => {
+  const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
+  return CONTRACTS[networkKey].vaultProducts[risk]
+}
 
 export const VAULT_ABI = [
   {

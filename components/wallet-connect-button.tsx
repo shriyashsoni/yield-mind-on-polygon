@@ -12,12 +12,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { useQuery } from "@tanstack/react-query"
+import { ethers } from "ethers"
+import { useVaultData } from "@/hooks/use-vault-data"
 
 export function WalletConnectButton() {
-  const { address, isConnected, chainId, connect, disconnect, switchNetwork } = useWeb3()
+  const { address, isConnected, chainId, connect, disconnect, switchNetwork, provider } = useWeb3()
+  const { usdcBalance, assetSymbol } = useVaultData()
 
   const isCorrectNetwork = chainId === 137 || chainId === 80002
   const currentChain = chainId === 137 ? "Polygon" : chainId === 80002 ? "Amoy" : "Unknown"
+  const nativeSymbol = chainId === 137 || chainId === 80002 ? "MATIC" : "NATIVE"
+
+  const { data: nativeBalance = "0" } = useQuery({
+    queryKey: ["nativeBalance", address, chainId],
+    queryFn: async () => {
+      if (!provider || !address) return "0"
+      const balance = await provider.getBalance(address)
+      return ethers.formatUnits(balance, 18)
+    },
+    enabled: !!provider && !!address,
+    refetchInterval: 10000,
+  })
 
   if (!isConnected) {
     return (
@@ -38,11 +54,16 @@ export function WalletConnectButton() {
       )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+          <Button variant="outline" size="sm" className="h-auto py-2 px-3 gap-2 bg-transparent">
             <Wallet className="w-4 h-4" />
-            <span className="hidden sm:inline">
-              {address?.slice(0, 6)}...{address?.slice(-4)}
-            </span>
+            <div className="hidden sm:flex flex-col items-start leading-tight">
+              <span className="text-xs font-medium">
+                {address?.slice(0, 6)}...{address?.slice(-4)}
+              </span>
+              <span className="text-[10px] text-muted-foreground">
+                {Number(nativeBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })} {nativeSymbol}
+              </span>
+            </div>
             <Badge variant="secondary" className="ml-1">
               {currentChain}
             </Badge>
@@ -52,6 +73,16 @@ export function WalletConnectButton() {
           <DropdownMenuLabel>Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="font-mono text-xs">{address}</DropdownMenuItem>
+          <DropdownMenuItem className="text-xs flex justify-between">
+            <span>Wallet Balance</span>
+            <span className="font-medium">
+              {Number(nativeBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })} {nativeSymbol}
+            </span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-xs flex justify-between">
+            <span>{assetSymbol} Balance</span>
+            <span className="font-medium">{Number(usdcBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => switchNetwork(137)} className="cursor-pointer">
             Switch to Polygon Mainnet
