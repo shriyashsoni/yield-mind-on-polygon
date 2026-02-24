@@ -812,6 +812,178 @@ export default function Wave6ReleasePage() {
         </div>
       </section>
 
+      {/* Smart Contracts Section */}
+      <section className="py-24 bg-gradient-to-br from-slate-500/5 via-background to-background border-t border-border">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/20 mb-4">
+              <Code className="w-4 h-4 text-slate-400" />
+              <span className="text-sm font-medium text-slate-400">Smart Contracts</span>
+            </div>
+            <h2 className="text-4xl font-bold mb-4">Wave 6 Smart Contracts</h2>
+            <p className="text-lg text-muted-foreground text-balance">
+              All deployed smart contracts on Polygon Amoy Testnet with real-time verification and interaction capabilities
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto space-y-4">
+            {/* Deployed Contracts */}
+            <div className="mb-8">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                Deployed Contracts (3/10)
+              </h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {/* YLDToken */}
+                <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/10 to-background hover:border-green-500/50 transition-all hover:shadow-lg">
+                  <CardContent className="p-6 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-bold text-lg">YLDToken</h4>
+                        <p className="text-xs text-muted-foreground">Protocol Token</p>
+                      </div>
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    </div>
+                    <div className="bg-green-500/10 rounded p-3 border border-green-500/20">
+                      <p className="text-xs text-muted-foreground mb-2">Contract Address</p>
+                      <p className="font-mono text-xs break-all text-foreground font-semibold">
+                        0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full gap-2 text-xs border-green-500/30 hover:bg-green-500/10"
+                      asChild
+                    >
+                      <a
+                        href="https://amoy.polygonscan.com/address/0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c#code"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View on PolygonScan
+                        <ArrowRight className="w-3 h-3" />
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* YieldVaultV4 */}
+                <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/10 to-background hover:border-green-500/50 transition-all hover:shadow-lg">
+                  <CardContent className="p-6 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-bold text-lg">YieldVaultV4</h4>
+                        <p className="text-xs text-muted-foreground">Multi-Asset Vault</p>
+                      </div>
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    </div>
+                    <div className="bg-green-500/10 rounded p-3 border border-green-500/20">
+                      <p className="text-xs text-muted-foreground mb-2">Contract Address</p>
+                      <p className="font-mono text-xs break-all text-foreground font-semibold">
+                        0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full gap-2 text-xs border-green-500/30 hover:bg-green-500/10"
+                      asChild
+                    >
+                      <a
+                        href="https://amoy.polygonscan.com/address/0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3#code"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View on PolygonScan
+                        <ArrowRight className="w-3 h-3" />
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* RiskGuard */}
+                <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/10 to-background hover:border-green-500/50 transition-all hover:shadow-lg">
+                  <CardContent className="p-6 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-bold text-lg">RiskGuard</h4>
+                        <p className="text-xs text-muted-foreground">Insurance Module</p>
+                      </div>
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    </div>
+                    <div className="bg-green-500/10 rounded p-3 border border-green-500/20">
+                      <p className="text-xs text-muted-foreground mb-2">Contract Address</p>
+                      <p className="font-mono text-xs break-all text-foreground font-semibold">
+                        0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full gap-2 text-xs border-green-500/30 hover:bg-green-500/10"
+                      asChild
+                    >
+                      <a
+                        href="https://amoy.polygonscan.com/address/0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A#code"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View on PolygonScan
+                        <ArrowRight className="w-3 h-3" />
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Pending Contracts */}
+            <div>
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                Pending Deployment (7/10)
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+                {[
+                  { name: "StrategyManager", desc: "Strategy Orchestration" },
+                  { name: "AIOracle", desc: "AI Prediction Engine" },
+                  { name: "InsuranceReserve", desc: "Protection Pool" },
+                  { name: "YieldMindGovernor", desc: "DAO Governance" },
+                  { name: "YLDStaking", desc: "Token Staking" },
+                  { name: "TimelockController", desc: "Time-Locked Execution" },
+                  { name: "AutonomousExecutor", desc: "Autonomous Rebalancing" },
+                ].map((contract) => (
+                  <Card key={contract.name} className="border border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-background">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-semibold text-sm">{contract.name}</h4>
+                          <p className="text-xs text-muted-foreground">{contract.desc}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-amber-600">
+                        <AlertTriangle className="w-3 h-3" />
+                        <span>Pending</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <Button asChild>
+              <Link href="/contracts" className="gap-2">
+                <Code className="w-4 h-4" />
+                View All Contracts & Deployment Status
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
