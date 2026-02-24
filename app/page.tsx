@@ -88,377 +88,131 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Latest Updates Section - Wave 2 */}
-      <section className="py-24 bg-gradient-to-br from-primary/5 via-background to-background">
+      {/* Wave 6 Section - Institutional Enterprise */}
+      <section className="py-24 bg-gradient-to-br from-amber-500/5 via-orange-500/5 to-background border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-              <span className="text-sm font-medium text-primary">Wave 2 Updates</span>
-            </div>
-            <h2 className="text-4xl font-bold mb-4">What's New in YieldMind</h2>
-            <p className="text-lg text-muted-foreground text-balance">
-              Major upgrades and new features to enhance your DeFi experience
-            </p>
-            <div className="mt-6">
-              <a
-                href="https://yieldmind.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
-              >
-                <Rocket className="w-4 h-4" />
-                Try Live Demo
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {/* AI Optimization Engine v2 */}
-            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                  <Sparkles className="w-3 h-3" />
-                  NEW
-                </span>
-              </div>
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">AI Optimization Engine v2</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Improved prediction accuracy by training models on larger DeFi datasets, including protocol APYs,
-                  liquidity depth, and market volatility
-                </p>
-                <div className="flex items-center gap-2 text-xs text-primary font-medium">
-                  <Activity className="w-3 h-3" />
-                  <span>Enhanced ML Models</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Smart Contract Upgrade */}
-            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-500 text-white text-xs font-bold">
-                  <CheckCircle2 className="w-3 h-3" />
-                  UPDATED
-                </span>
-              </div>
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
-                  <Lock className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-                <h3 className="text-xl font-bold">Smart Contract Upgrade</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Added automated rebalancing logic and safety circuit breakers to minimize impermanent loss during high
-                  volatility
-                </p>
-                <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 font-medium">
-                  <Shield className="w-3 h-3" />
-                  <span>Enhanced Security</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* zkEVM Integration */}
-            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-500 text-white text-xs font-bold">
-                  <Zap className="w-3 h-3" />
-                  UPGRADED
-                </span>
-              </div>
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-500/10 flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold">zkEVM Integration</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Migrated all core contracts fully to Polygon zkEVM, improving gas efficiency by 40% and enabling
-                  zero-knowledge-based transaction proofs
-                </p>
-                <div className="flex items-center gap-2 text-xs text-purple-600 dark:text-purple-400 font-medium">
-                  <TrendingUp className="w-3 h-3" />
-                  <span>40% Gas Savings</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Performance Dashboard */}
-            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500 text-white text-xs font-bold">
-                  <BarChart3 className="w-3 h-3" />
-                  ENHANCED
-                </span>
-              </div>
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="text-xl font-bold">Performance Dashboard</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Enhanced the UI/UX for real-time visualization of yield curves, portfolio allocations, and AI
-                  performance metrics
-                </p>
-                <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 font-medium">
-                  <Activity className="w-3 h-3" />
-                  <span>Real-time Analytics</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* DAO Module Expansion */}
-            <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background hover:border-primary/50 transition-all hover:shadow-lg relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500 text-white text-xs font-bold">
-                  <Users className="w-3 h-3" />
-                  EXPANDED
-                </span>
-              </div>
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-500/10 flex items-center justify-center">
-                  <Vote className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                </div>
-                <h3 className="text-xl font-bold">DAO Module Expansion</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Enabled community staking and proposal-based governance through a transparent on-chain voting
-                  mechanism
-                </p>
-                <div className="flex items-center gap-2 text-xs text-orange-600 dark:text-orange-400 font-medium">
-                  <Users className="w-3 h-3" />
-                  <span>Community Governed</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Live Preview CTA */}
-            <Card className="border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary hover:shadow-xl transition-all">
-              <CardContent className="p-6 space-y-4 flex flex-col justify-center h-full">
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Rocket className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Experience Wave 2</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Try all the new features live on our demo platform
-                </p>
-                <Button asChild className="w-full gap-2">
-                  <a href="https://yieldmind.vercel.app" target="_blank" rel="noopener noreferrer">
-                    Launch Demo
-                    <ArrowRight className="w-4 h-4" />
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Latest Updates Section - Wave 3 */}
-      <section className="py-24 bg-gradient-to-br from-cyan-500/5 via-teal-500/5 to-background border-y border-border">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-teal-500/20 border border-cyan-500/30 mb-4">
-              <Rocket className="w-4 h-4 text-cyan-400 animate-bounce" />
-              <span className="text-sm font-medium bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-                Wave 3 - Production Ready
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 mb-4 animate-pulse">
+              <Rocket className="w-4 h-4 text-amber-400 animate-bounce" />
+              <span className="text-sm font-medium bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                Wave 6 - Institutional Enterprise
               </span>
             </div>
-            <h2 className="text-4xl font-bold mb-4">🚀 Next-Generation Features</h2>
+            <h2 className="text-4xl font-bold mb-4">Enterprise-Grade DeFi Infrastructure</h2>
             <p className="text-lg text-muted-foreground text-balance">
-              Advanced AI forecasting, multi-asset vaults, cross-chain support, and autonomous rebalancing
+              Portfolio mandates, risk insurance, cross-chain routing, oracle redundancy, and autonomous governance
             </p>
             <div className="mt-6">
               <Link
-                href="/release/wave-3"
-                className="inline-flex items-center gap-2 text-cyan-400 hover:underline font-medium"
+                href="/release/wave-6"
+                className="inline-flex items-center gap-2 text-amber-400 hover:underline font-medium"
               >
                 <Sparkles className="w-4 h-4" />
-                Explore Wave 3 Features
+                Explore Wave 6 Features
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
-            {/* AI Engine v3 */}
-            <Card className="border-2 border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-background hover:border-cyan-500/50 transition-all hover:shadow-lg">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-8">
+            {/* Portfolio Mandate */}
+            <Card className="border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-background hover:border-amber-500/50 transition-all hover:shadow-lg">
               <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-cyan-400" />
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-amber-400" />
                 </div>
-                <h3 className="text-xl font-bold">AI Engine v3</h3>
+                <h3 className="text-xl font-bold">Portfolio Mandate</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
-                  7-day forecasting, risk scoring (0-100), sentiment analysis, and explainable AI recommendations
+                  Institutional-grade mandate management with customizable risk thresholds, APY targets, and chain diversification limits
                 </p>
-                <div className="flex items-center gap-2 text-xs text-cyan-400 font-medium">
-                  <LineChart className="w-3 h-3" />
-                  <span>Predictive Analytics</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* YieldVault v3 */}
-            <Card className="border-2 border-teal-500/30 bg-gradient-to-br from-teal-500/10 to-background hover:border-teal-500/50 transition-all hover:shadow-lg">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500/20 to-teal-500/10 flex items-center justify-center">
-                  <Lock className="w-6 h-6 text-teal-400" />
-                </div>
-                <h3 className="text-xl font-bold">YieldVault v3</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Multi-asset support (USDC, DAI, ETH), time-weighted rebalancing, dynamic fees, insurance buffer
-                </p>
-                <div className="flex items-center gap-2 text-xs text-teal-400 font-medium">
-                  <Shield className="w-3 h-3" />
-                  <span>Multi-Asset</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Autonomous Mode */}
-            <Card className="border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-background hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 flex items-center justify-center">
-                  <Workflow className="w-6 h-6 text-emerald-400" />
-                </div>
-                <h3 className="text-xl font-bold">Autonomous Mode</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Fully automated rebalancing with Chainlink Automation, volatility triggers, and emergency fail-safes
-                </p>
-                <div className="flex items-center gap-2 text-xs text-emerald-400 font-medium">
-                  <Zap className="w-3 h-3" />
-                  <span>Automated</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Cross-Chain */}
-            <Card className="border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-background hover:border-blue-500/50 transition-all hover:shadow-lg">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center">
-                  <Network className="w-6 h-6 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-bold">Cross-Chain</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  LayerZero integration for Polygon, Base, and Arbitrum with seamless cross-chain vaults
-                </p>
-                <div className="flex items-center gap-2 text-xs text-blue-400 font-medium">
-                  <Globe className="w-3 h-3" />
-                  <span>3 Chains</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="text-center">
-            <Button
-              size="lg"
-              className="gap-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white"
-              asChild
-            >
-              <Link href="/release/wave-3">
-                View All Wave 3 Features
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Wave 4 Section */}
-      <section className="py-24 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-background border-y border-border">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 mb-4 animate-pulse">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span className="text-sm font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Wave 4 - Global Scaling
-              </span>
-            </div>
-            <h2 className="text-4xl font-bold mb-4">Global Multi-Chain Platform</h2>
-            <p className="text-lg text-muted-foreground text-balance">
-              Meta-ensemble AI, multi-vault system, institutional analytics, and worldwide scaling
-            </p>
-            <div className="mt-6">
-              <Link
-                href="/release/wave-4"
-                className="inline-flex items-center gap-2 text-purple-400 hover:underline font-medium"
-              >
-                <Rocket className="w-4 h-4" />
-                Explore Wave 4 Features
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
-            {/* AI Engine v4 */}
-            <Card className="border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-background hover:border-purple-500/50 transition-all hover:shadow-lg">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-purple-500/10 flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold">AI Engine v4.0</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Meta-ensemble architecture with LSTM, TFT, XGBoost, and Transformer models achieving 95%+ accuracy
-                </p>
-                <div className="flex items-center gap-2 text-xs text-purple-400 font-medium">
-                  <Sparkles className="w-3 h-3" />
-                  <span>Meta-Ensemble AI</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Multi-Vault */}
-            <Card className="border-2 border-pink-500/30 bg-gradient-to-br from-pink-500/10 to-background hover:border-pink-500/50 transition-all hover:shadow-lg">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500/20 to-pink-500/10 flex items-center justify-center">
-                  <Layers className="w-6 h-6 text-pink-400" />
-                </div>
-                <h3 className="text-xl font-bold">Multi-Vault System</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  Stable, ETH Momentum, Polygon Ecosystem, and High-APY vaults with separate AI models and risk profiles
-                </p>
-                <div className="flex items-center gap-2 text-xs text-pink-400 font-medium">
+                <div className="flex items-center gap-2 text-xs text-amber-400 font-medium">
                   <Lock className="w-3 h-3" />
-                  <span>4 Vault Types</span>
+                  <span>Institutional Control</span>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Cross-Chain Expansion */}
-            <Card className="border-2 border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-background hover:border-violet-500/50 transition-all hover:shadow-lg">
+            {/* Risk Insurance Module */}
+            <Card className="border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-background hover:border-orange-500/50 transition-all hover:shadow-lg">
               <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-violet-500/20 to-violet-500/10 flex items-center justify-center">
-                  <Globe className="w-6 h-6 text-violet-400" />
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-500/10 flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-orange-400" />
                 </div>
-                <h3 className="text-xl font-bold">Cross-Chain Expansion</h3>
+                <h3 className="text-xl font-bold">Risk Insurance Module</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
-                  Polygon, Base, Arbitrum, Optimism support with LayerZero V2 for seamless multi-chain rebalancing
+                  AI-powered protection with automated reserves, drawdown simulation, and capital protection triggers
                 </p>
-                <div className="flex items-center gap-2 text-xs text-violet-400 font-medium">
-                  <Network className="w-3 h-3" />
-                  <span>5+ Chains</span>
+                <div className="flex items-center gap-2 text-xs text-orange-400 font-medium">
+                  <Shield className="w-3 h-3" />
+                  <span>Protection Protocol</span>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Institutional Analytics */}
-            <Card className="border-2 border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-500/10 to-background hover:border-fuchsia-500/50 transition-all hover:shadow-lg">
+            {/* Cross-Chain Router */}
+            <Card className="border-2 border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-background hover:border-yellow-500/50 transition-all hover:shadow-lg">
               <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-fuchsia-500/20 to-fuchsia-500/10 flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-fuchsia-400" />
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500/20 to-yellow-500/10 flex items-center justify-center">
+                  <Network className="w-6 h-6 text-yellow-400" />
                 </div>
-                <h3 className="text-xl font-bold">Institutional Analytics</h3>
+                <h3 className="text-xl font-bold">Cross-Chain Router</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
-                  Advanced dashboard with Sharpe ratios, drawdown curves, AI reasoning, and event monitoring
+                  Intelligent liquidity routing across 6+ chains with gas optimization and bridge health scoring
                 </p>
-                <div className="flex items-center gap-2 text-xs text-fuchsia-400 font-medium">
-                  <TrendingUp className="w-3 h-3" />
-                  <span>Enterprise Grade</span>
+                <div className="flex items-center gap-2 text-xs text-yellow-400 font-medium">
+                  <Globe className="w-3 h-3" />
+                  <span>6+ Chain Support</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Oracle Redundancy */}
+            <Card className="border-2 border-amber-600/30 bg-gradient-to-br from-amber-600/10 to-background hover:border-amber-600/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-600/20 to-amber-600/10 flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-amber-500" />
+                </div>
+                <h3 className="text-xl font-bold">Oracle Redundancy</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  99.99% uptime with Chainlink, Pyth, and Uniswap TWAP multi-oracle failover system
+                </p>
+                <div className="flex items-center gap-2 text-xs text-amber-500 font-medium">
+                  <Activity className="w-3 h-3" />
+                  <span>99.99% Uptime</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Governance */}
+            <Card className="border-2 border-orange-600/30 bg-gradient-to-br from-orange-600/10 to-background hover:border-orange-600/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-600/20 to-orange-600/10 flex items-center justify-center">
+                  <Vote className="w-6 h-6 text-orange-500" />
+                </div>
+                <h3 className="text-xl font-bold">Enhanced Governance</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  Performance-based voting weights and treasury yield optimization through decentralized DAO control
+                </p>
+                <div className="flex items-center gap-2 text-xs text-orange-500 font-medium">
+                  <Users className="w-3 h-3" />
+                  <span>DAO Governance</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enterprise API */}
+            <Card className="border-2 border-yellow-600/30 bg-gradient-to-br from-yellow-600/10 to-background hover:border-yellow-600/50 transition-all hover:shadow-lg">
+              <CardContent className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-600/20 to-yellow-600/10 flex items-center justify-center">
+                  <Workflow className="w-6 h-6 text-yellow-500" />
+                </div>
+                <h3 className="text-xl font-bold">Enterprise API</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">
+                  REST/WebSocket APIs for real-time risk scoring, AI forecasting, and autonomous webhook execution
+                </p>
+                <div className="flex items-center gap-2 text-xs text-yellow-500 font-medium">
+                  <LineChart className="w-3 h-3" />
+                  <span>Real-time Data</span>
                 </div>
               </CardContent>
             </Card>
@@ -467,11 +221,11 @@ export default function HomePage() {
           <div className="text-center">
             <Button
               size="lg"
-              className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
               asChild
             >
-              <Link href="/release/wave-4">
-                View All Wave 4 Features
+              <Link href="/release/wave-6">
+                View All Wave 6 Features
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
