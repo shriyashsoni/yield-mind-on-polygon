@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useWeb3 } from '@/lib/web3-context';
 import { Header } from '@/components/header';
 import { Navigation } from '@/components/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { address, isConnected, chain } = useAccount();
+  const { address, isConnected, chainId } = useWeb3();
   const [activeTab, setActiveTab] = useState('overview');
   const [metrics, setMetrics] = useState({
     totalVolumeDeployed: '$0',
@@ -64,7 +64,7 @@ export default function DashboardPage() {
     );
   }
 
-  const isValidChain = chain?.id === 80002; // Polygon Amoy
+  const isValidChain = chainId === 80002; // Polygon Amoy
 
   return (
     <div className="min-h-screen bg-background">
