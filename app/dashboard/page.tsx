@@ -8,7 +8,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { DeploymentDashboard } from '@/components/deployment-dashboard';
+import { VaultOverview } from '@/components/vault-overview';
+import { MLRecommendations } from '@/components/ml-recommendations';
+import { PerformanceMetrics } from '@/components/performance-metrics';
+import { PortfolioMandatePanel } from '@/components/portfolio-mandate-panel';
+import { RiskInsuranceModule } from '@/components/risk-insurance-module';
+import { CrossChainMonitor } from '@/components/cross-chain-monitor';
+import { AutonomousExecutionMonitor } from '@/components/autonomous-execution-monitor';
+import { AIReasoningPanel } from '@/components/ai-reasoning-panel';
 import { DashboardStats } from '@/components/dashboard-stats';
 import { DEPLOYED_CONTRACTS, getDeployedContracts } from '@/lib/contract-utils';
 import {
@@ -20,6 +27,9 @@ import {
   AlertCircle,
   CheckCircle2,
   Network,
+  Lock,
+  Globe,
+  Brain,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -168,31 +178,55 @@ export default function DashboardPage() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="contracts">Contracts</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="stats">Stats</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+            <TabsTrigger value="enterprise">Enterprise</TabsTrigger>
+            <TabsTrigger value="monitor">Monitor</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
+          {/* Portfolio Tab - Vault & Recommendations */}
+          <TabsContent value="portfolio" className="space-y-6">
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <VaultOverview />
+                <PerformanceMetrics />
+              </div>
+              <div className="space-y-6">
+                <MLRecommendations />
+                <AIReasoningPanel />
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Enterprise Tab - Mandate, Risk, Cross-Chain */}
+          <TabsContent value="enterprise" className="space-y-6">
+            <PortfolioMandatePanel />
+            <div className="grid lg:grid-cols-2 gap-6">
+              <RiskInsuranceModule />
+              <CrossChainMonitor />
+            </div>
+          </TabsContent>
+
+          {/* Monitor Tab - Autonomous Execution & Stats */}
+          <TabsContent value="monitor" className="space-y-6">
+            <AutonomousExecutionMonitor />
             <Card>
               <CardHeader>
-                <CardTitle>Wave 6 Protocol Overview</CardTitle>
-                <CardDescription>
-                  Enterprise-grade DeFi infrastructure with AI optimization, risk insurance, and autonomous execution
-                </CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Smart Contract Status
+                </CardTitle>
+                <CardDescription>Deployed and ready for interaction</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="p-4 border rounded-lg space-y-2">
                     <h4 className="font-semibold flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                       Deployed Contracts
                     </h4>
-                    <p className="text-2xl font-bold">{getDeployedContracts().length}</p>
-                    <p className="text-xs text-muted-foreground">of {DEPLOYED_CONTRACTS.length} total</p>
+                    <p className="text-2xl font-bold">{getDeployedContracts().length}/10</p>
+                    <p className="text-xs text-muted-foreground">Active on Polygon Amoy</p>
                   </div>
                   <div className="p-4 border rounded-lg space-y-2">
                     <h4 className="font-semibold flex items-center gap-2">
@@ -200,54 +234,11 @@ export default function DashboardPage() {
                       Pending Deployment
                     </h4>
                     <p className="text-2xl font-bold">{DEPLOYED_CONTRACTS.length - getDeployedContracts().length}</p>
-                    <p className="text-xs text-muted-foreground">awaiting deployment</p>
+                    <p className="text-xs text-muted-foreground">Ready to deploy</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* Contracts Tab */}
-          <TabsContent value="contracts" className="space-y-6">
-            <DeploymentDashboard />
-          </TabsContent>
-
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Protocol Analytics
-                </CardTitle>
-                <CardDescription>Performance metrics and contract statistics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                    <h4 className="font-semibold mb-2">AI Forecasting Engine</h4>
-                    <p className="text-sm text-muted-foreground">Real-time predictive accuracy and confidence metrics</p>
-                  </div>
-                  <div className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                    <h4 className="font-semibold mb-2">Risk Metrics</h4>
-                    <p className="text-sm text-muted-foreground">Risk scoring, insurance reserve, and protection status</p>
-                  </div>
-                  <div className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                    <h4 className="font-semibold mb-2">Strategy Performance</h4>
-                    <p className="text-sm text-muted-foreground">Individual strategy ROI, APY, and efficiency metrics</p>
-                  </div>
-                  <div className="p-4 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                    <h4 className="font-semibold mb-2">Cross-Chain Activity</h4>
-                    <p className="text-sm text-muted-foreground">Multi-chain routing and liquidity optimization</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Stats Tab */}
-          <TabsContent value="stats" className="space-y-6">
-            <DashboardStats />
           </TabsContent>
         </Tabs>
       </main>
