@@ -1,7 +1,7 @@
 "use client"
 
 import { useWeb3 } from "@/lib/web3-context"
-import { CONTRACTS, VAULT_ABI, ERC20_ABI } from "@/lib/contracts"
+import { CONTRACTS, VAULT_ABI, ERC20_ABI, isDeployedAddress } from "@/lib/contracts"
 import { ethers } from "ethers"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -15,20 +15,31 @@ export function useVaultActions() {
 
   const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
   const vaultAddress = CONTRACTS[networkKey].vault
-  const usdcAddress = CONTRACTS[networkKey].usdc
+  const defaultAssetAddress = CONTRACTS[networkKey].token
+
+  const getVaultAndAsset = async () => {
+    if (!isDeployedAddress(vaultAddress)) throw new Error("Vault contract is not deployed on this network")
+
+    const vaultContract = new ethers.Contract(vaultAddress, VAULT_ABI, signer)
+    const assetAddress = (await vaultContract.asset().catch(() => defaultAssetAddress)) as string
+    const assetContract = new ethers.Contract(assetAddress, ERC20_ABI, signer)
+    const assetDecimals = Number(await assetContract.decimals().catch(() => 18))
+    const assetSymbol = (await assetContract.symbol().catch(() => "TOKEN")) as string
+
+    return { vaultContract, assetContract, assetAddress, assetDecimals, assetSymbol }
+  }
 
   const deposit = async (amount: string) => {
     if (!address || !signer) throw new Error("Wallet not connected")
 
     try {
       setIsDepositPending(true)
-      const amountBigInt = ethers.parseUnits(amount, 6)
 
-      const usdcContract = new ethers.Contract(usdcAddress, ERC20_ABI, signer)
-      const vaultContract = new ethers.Contract(vaultAddress, VAULT_ABI, signer)
+      const { vaultContract, assetContract, assetDecimals, assetSymbol } = await getVaultAndAsset()
+      const amountBigInt = ethers.parseUnits(amount, assetDecimals)
 
-      toast.info("Approving USDC...", { description: "Please confirm the transaction" })
-      const approveTx = await usdcContract.approve(vaultAddress, amountBigInt)
+      toast.info(`Approving ${assetSymbol}...`, { description: "Please confirm the transaction" })
+      const approveTx = await assetContract.approve(vaultAddress, amountBigInt)
       await approveTx.wait()
 
       toast.info("Depositing to vault...", { description: "Please confirm the transaction" })
@@ -36,7 +47,7 @@ export function useVaultActions() {
       setDepositHash(depositTx.hash)
       await depositTx.wait()
 
-      toast.success("Deposit successful!", { description: `Deposited ${amount} USDC` })
+      toast.success("Deposit successful!", { description: `Deposited ${amount} ${assetSymbol}` })
     } catch (error: any) {
       console.error("[v0] Deposit error:", error)
       toast.error("Deposit failed", { description: error.message })
@@ -45,21 +56,20 @@ export function useVaultActions() {
     }
   }
 
-  const withdraw = async (shares: string) => {
+  const withdraw = async (amount: string) => {
     if (!address || !signer) throw new Error("Wallet not connected")
 
     try {
       setIsWithdrawPending(true)
-      const sharesBigInt = ethers.parseUnits(shares, 18)
-
-      const vaultContract = new ethers.Contract(vaultAddress, VAULT_ABI, signer)
+      const { vaultContract, assetDecimals, assetSymbol } = await getVaultAndAsset()
+      const assetsBigInt = ethers.parseUnits(amount, assetDecimals)
 
       toast.info("Withdrawing from vault...", { description: "Please confirm the transaction" })
-      const withdrawTx = await vaultContract.redeem(sharesBigInt, address, address)
+      const withdrawTx = await vaultContract.withdraw(assetsBigInt, address, address)
       setWithdrawHash(withdrawTx.hash)
       await withdrawTx.wait()
 
-      toast.success("Withdrawal successful!", { description: `Redeemed ${shares} shares` })
+      toast.success("Withdrawal successful!", { description: `Withdrew ${amount} ${assetSymbol}` })
     } catch (error: any) {
       console.error("[v0] Withdraw error:", error)
       toast.error("Withdrawal failed", { description: error.message })

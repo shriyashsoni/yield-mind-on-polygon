@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import { useWeb3 } from '@/lib/web3-context';
 import { Header } from '@/components/header';
 import { Navigation } from '@/components/navigation';
+import { useVaultData } from '@/hooks/use-vault-data';
+import { useStrategyData } from '@/hooks/use-strategy-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { DeploymentDashboard } from '@/components/deployment-dashboard';
 import { DashboardStats } from '@/components/dashboard-stats';
+import { VaultOverview } from '@/components/vault-overview';
 import { DEPLOYED_CONTRACTS, getDeployedContracts } from '@/lib/contract-utils';
 import {
   Wallet,
@@ -24,6 +27,8 @@ import {
 
 export default function DashboardPage() {
   const { address, isConnected, chainId } = useWeb3();
+  const { totalValueLocked } = useVaultData();
+  const { strategies } = useStrategyData();
   const [activeTab, setActiveTab] = useState('overview');
   const [metrics, setMetrics] = useState({
     totalVolumeDeployed: '$0',
@@ -33,12 +38,15 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
-    // Fetch real metrics from contracts
     if (isConnected) {
-      console.log('[v0] Fetching contract metrics for address:', address);
-      // This will be connected to actual contract reads
+      setMetrics({
+        totalVolumeDeployed: `$${Number(totalValueLocked || 0).toLocaleString()}`,
+        protocolHealth: '100%',
+        activeStrategies: strategies.length,
+        insuranceReserve: 'On-chain',
+      });
     }
-  }, [isConnected, address]);
+  }, [isConnected, address, strategies.length, totalValueLocked]);
 
   if (!isConnected) {
     return (
@@ -177,6 +185,7 @@ export default function DashboardPage() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
+            <VaultOverview />
             <Card>
               <CardHeader>
                 <CardTitle>Wave 6 Protocol Overview</CardTitle>

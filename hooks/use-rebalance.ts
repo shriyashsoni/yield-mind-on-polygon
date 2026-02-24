@@ -1,7 +1,7 @@
 "use client"
 
 import { useWeb3 } from "@/lib/web3-context"
-import { CONTRACTS, VAULT_ABI } from "@/lib/contracts"
+import { CONTRACTS, VAULT_ABI, isDeployedAddress } from "@/lib/contracts"
 import { ethers } from "ethers"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -12,6 +12,8 @@ export interface RebalanceRecommendation {
   confidence: number
   projectedAPY: number
   gasCost: string
+  twapPrice?: string
+  spotPrice?: string
 }
 
 export function useRebalance() {
@@ -28,20 +30,22 @@ export function useRebalance() {
       return
     }
 
+    if (!isDeployedAddress(vaultAddress)) {
+      toast.error("Vault contract is not deployed on this network")
+      return
+    }
+
     try {
       setIsPending(true)
       setIsSuccess(false)
 
       const vaultContract = new ethers.Contract(vaultAddress, VAULT_ABI, signer)
-      const signature = "0x" + "00".repeat(65)
+      const twapPrice = recommendation.twapPrice ? BigInt(recommendation.twapPrice) : 1_000000000000000000n
+      const spotPrice = recommendation.spotPrice ? BigInt(recommendation.spotPrice) : twapPrice
 
       toast.info("Executing rebalance...", { description: "Please confirm the transaction" })
 
-      const tx = await vaultContract.rebalance(
-        recommendation.strategyAddresses,
-        recommendation.newAllocations.map((a) => BigInt(a * 100)),
-        signature,
-      )
+      const tx = await vaultContract.rebalance(twapPrice, spotPrice)
 
       await tx.wait()
 

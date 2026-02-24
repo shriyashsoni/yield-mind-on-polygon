@@ -28,63 +28,70 @@ export const DEPLOYMENT_CONFIG = {
       description: 'ERC20 governance token for YieldMind',
       address: '0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c',
       deployed: true,
-      explorerUrl: 'https://amoy.polygonscan.com/address/0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c',
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c#code',
     },
     YieldVaultV4: {
       name: 'YieldVault V4',
       description: 'Core vault contract with portfolio management',
       address: '0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3',
       deployed: true,
-      explorerUrl: 'https://amoy.polygonscan.com/address/0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3',
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3#code',
     },
     RiskGuard: {
       name: 'RiskGuard',
       description: 'Risk management and protection module',
-      address: '0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A',
+      address: '0x1C304fe6Dd1c7797c09EE39c12387eF63eB1f664',
       deployed: true,
-      explorerUrl: 'https://amoy.polygonscan.com/address/0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A',
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x1C304fe6Dd1c7797c09EE39c12387eF63eB1f664#code',
     },
     StrategyManager: {
       name: 'Strategy Manager',
       description: 'Manages yield strategies and execution',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0x82fc23020f1cf58EA47d4a0dDDc2F8C42BE65705',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x82fc23020f1cf58EA47d4a0dDDc2F8C42BE65705#code',
     },
     AIOracle: {
       name: 'AI Oracle',
       description: 'AI-powered price forecasting oracle',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0xFB5f412475b70Ef756E32a946731F2426c284522',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0xFB5f412475b70Ef756E32a946731F2426c284522#code',
     },
     InsuranceReserve: {
       name: 'Insurance Reserve',
       description: 'Insurance reserve and protection pool',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0x9D980e7418f692916Bc7f3A47A96074702F7B5f6',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x9D980e7418f692916Bc7f3A47A96074702F7B5f6#code',
     },
     YieldMindGovernor: {
       name: 'YieldMind Governor',
       description: 'DAO governance and voting',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0x78bf048E450Ec94cB055C8ab180CA27c912e975e',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x78bf048E450Ec94cB055C8ab180CA27c912e975e#code',
     },
     YLDStaking: {
       name: 'YLD Staking',
       description: 'Staking contract for governance participation',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0x48Bd564c86e379D08D5b536c766b65b966548Ab1',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x48Bd564c86e379D08D5b536c766b65b966548Ab1#code',
     },
     TimelockController: {
       name: 'Timelock Controller',
       description: 'Time-locked execution for governance',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0xc41CCBba49b84BB3E5CCb13020f2D41A0FC2786D',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0xc41CCBba49b84BB3E5CCb13020f2D41A0FC2786D#code',
     },
     AutonomousExecutor: {
       name: 'Autonomous Executor',
       description: 'Autonomous execution and rebalancing',
-      address: '0x0000000000000000000000000000000000000000',
-      deployed: false,
+      address: '0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A',
+      deployed: true,
+      explorerUrl: 'https://amoy.polygonscan.com/address/0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A#code',
     },
   },
 
@@ -147,10 +154,15 @@ The following order must be strictly followed due to dependencies:
 ## Currently Deployed Contracts (Amoy)
 
 ✅ YLDToken: 0x030e4Dfc7D89e6251Ef06ADbC536A85357BCb28c
+✅ YLDStaking: 0x48Bd564c86e379D08D5b536c766b65b966548Ab1
+✅ TimelockController: 0xc41CCBba49b84BB3E5CCb13020f2D41A0FC2786D
+✅ YieldMindGovernor: 0x78bf048E450Ec94cB055C8ab180CA27c912e975e
+✅ InsuranceReserve: 0x9D980e7418f692916Bc7f3A47A96074702F7B5f6
+✅ StrategyManager: 0x82fc23020f1cf58EA47d4a0dDDc2F8C42BE65705
 ✅ YieldVaultV4: 0x5A5Fc9066AbeC751577bA3BD330555E54e3aA8e3
-✅ RiskGuard: 0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A
-
-⏳ Pending Deployment: StrategyManager, AIOracle, InsuranceReserve, YieldMindGovernor, YLDStaking, TimelockController, AutonomousExecutor
+✅ AIOracle: 0xFB5f412475b70Ef756E32a946731F2426c284522
+✅ RiskGuard: 0x1C304fe6Dd1c7797c09EE39c12387eF63eB1f664
+✅ AutonomousExecutor: 0x3CAb3d9b205DBc5dB656c16743fc88C301d0ad6A
 
 ## Verification
 After deployment, verify contracts on PolygonScan:

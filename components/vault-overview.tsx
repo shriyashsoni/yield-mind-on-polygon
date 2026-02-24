@@ -14,7 +14,7 @@ import { toast } from "sonner"
 
 export function VaultOverview() {
   const { address, isConnected } = useWeb3()
-  const { totalValueLocked, userBalance, currentAPY, usdcBalance, isLoading } = useVaultData()
+  const { totalValueLocked, userBalance, currentAPY, usdcBalance, assetSymbol, isLoading } = useVaultData()
   const { deposit, withdraw, isDepositPending, isWithdrawPending } = useVaultActions()
 
   const [depositAmount, setDepositAmount] = useState("")
@@ -93,12 +93,12 @@ export function VaultOverview() {
           <div className="p-4 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Available USDC</p>
+              <p className="text-sm text-muted-foreground">Available Asset</p>
             </div>
             <p className="text-2xl font-bold text-foreground">
               {!isConnected ? "---" : isLoading ? "..." : Number(usdcBalance).toLocaleString()}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">In your wallet</p>
+            <p className="text-xs text-muted-foreground mt-1">In your wallet ({assetSymbol})</p>
           </div>
         </div>
 
@@ -130,7 +130,7 @@ export function VaultOverview() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Available: {isConnected ? `${Number(usdcBalance).toLocaleString()} USDC` : "Connect wallet"}
+                Available: {isConnected ? `${Number(usdcBalance).toLocaleString()} ${assetSymbol}` : "Connect wallet"}
               </p>
             </div>
             <Button
@@ -174,7 +174,7 @@ export function VaultOverview() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Deposited: {isConnected ? `${Number(userBalance).toLocaleString()} USDC` : "Connect wallet"}
+                Deposited: {isConnected ? `${Number(userBalance).toLocaleString()} ${assetSymbol}` : "Connect wallet"}
               </p>
             </div>
             <Button

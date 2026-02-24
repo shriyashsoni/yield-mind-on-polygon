@@ -2,8 +2,7 @@
 
 import { useWeb3 } from "@/lib/web3-context"
 import { useQuery } from "@tanstack/react-query"
-import { ethers } from "ethers"
-import { CONTRACTS, VAULT_ABI } from "@/lib/contracts"
+import { CONTRACTS, STRATEGY_MANAGER_ABI, isDeployedAddress } from "@/lib/contracts"
 import { DEMO_STRATEGIES } from "@/lib/demo-data"
 
 export interface Strategy {
@@ -20,29 +19,39 @@ export function useStrategyData() {
   const { provider, chainId } = useWeb3()
 
   const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
-  const vaultAddress = CONTRACTS[networkKey].vault
+  const strategyManagerAddress = CONTRACTS[networkKey].strategyManager
 
   const { data, isLoading } = useQuery({
     queryKey: ["strategies", chainId],
     queryFn: async () => {
       if (!provider) return null
 
-      const vaultContract = new ethers.Contract(vaultAddress, VAULT_ABI, provider)
+      if (!isDeployedAddress(strategyManagerAddress)) {
+        return null
+      }
+
+      const strategyManagerContract = new ethers.Contract(strategyManagerAddress, STRATEGY_MANAGER_ABI, provider)
 
       try {
-        const strategyCount = await vaultContract.getStrategyCount()
+        const strategyAddresses = (await strategyManagerContract.getStrategies()) as string[]
         const strategies: Strategy[] = []
 
-        for (let i = 0; i < Number(strategyCount); i++) {
-          const strategyData = await vaultContract.strategies(i)
+        for (const strategyAddress of strategyAddresses) {
+          const strategyData = await strategyManagerContract.strategies(strategyAddress)
+          const allocation = Number(strategyData.weightBps) / 100
+
+          if (!strategyData.active) {
+            continue
+          }
+
           strategies.push({
-            address: strategyData.strategyAddress,
-            name: getStrategyName(strategyData.strategyAddress),
-            protocol: getProtocolName(strategyData.strategyAddress),
-            allocation: Number(strategyData.allocation) / 100,
-            apy: calculateAPY(strategyData.strategyAddress),
-            tvl: ethers.formatUnits(strategyData.totalDebt, 6),
-            risk: getRiskLevel(strategyData.strategyAddress),
+            address: strategyAddress,
+            name: getStrategyName(strategyAddress),
+            protocol: getProtocolName(strategyAddress),
+            allocation,
+            apy: calculateAPY(strategyAddress),
+            tvl: "0",
+            risk: getRiskLevel(strategyAddress),
           })
         }
 
