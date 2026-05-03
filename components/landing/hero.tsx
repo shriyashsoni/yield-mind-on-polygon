@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useEffect, useRef } from "react"
 import { ScrambleText } from "./scramble-text"
+import { PoweredByPolygon } from "./powered-by-polygon"
 
 export function Hero() {
   const shapeRef = useRef<HTMLDivElement>(null)
@@ -146,9 +147,14 @@ export function Hero() {
             </Link>
           </div>
 
+          {/* Powered by Polygon pill */}
+          <div className="ym-reveal pt-2" data-reveal>
+            <PoweredByPolygon variant="pill" />
+          </div>
+
           {/* Trust badges */}
           <div
-            className="ym-reveal flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-4 text-xs text-white/55"
+            className="ym-reveal flex flex-wrap items-center justify-center gap-x-8 gap-y-3 pt-2 text-xs text-white/55"
             data-reveal
           >
             <TrustItem>Audited Smart Contracts</TrustItem>
