@@ -42,13 +42,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark bg-background ${inter.variable} ${geistMono.variable}`}>
       <body className="bg-background text-foreground font-sans antialiased">
-        <Suspense fallback={null}>
-          <Providers>
+        <Providers>
+          <Suspense fallback={null}>
             <TermsModal />
             {children}
             <Toaster position="bottom-right" theme="dark" />
-          </Providers>
-        </Suspense>
+          </Suspense>
+        </Providers>
         <Analytics />
       </body>
     </html>
