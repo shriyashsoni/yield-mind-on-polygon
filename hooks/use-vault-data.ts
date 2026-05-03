@@ -62,7 +62,7 @@ export function useVaultData() {
       currentAPY: 0,
       usdcBalance: "0",
       assetAddress: defaultAssetAddress,
-      assetSymbol: "YLD",
+      assetSymbol: "MATIC",
       assetDecimals: 18,
       isLoading,
       vaultAddress,
@@ -79,7 +79,10 @@ export function useVaultData() {
     currentAPY: 0,
     usdcBalance: ethers.formatUnits(data.assetBalance, decimals),
     assetAddress: data.assetAddress,
-    assetSymbol: data.assetSymbol,
+    // The whole UI denominates value in MATIC (Polygon's native asset). Override the
+    // on-chain symbol so users always see MATIC regardless of what the underlying
+    // ERC-4626 asset reports (USDC / YLD / etc.).
+    assetSymbol: "MATIC",
     assetDecimals: decimals,
     isLoading,
     vaultAddress,

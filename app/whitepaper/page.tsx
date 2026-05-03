@@ -115,7 +115,7 @@ export default function WhitepaperPage() {
                 multiple DeFi protocols on Polygon. The system combines a Groq-hosted reasoning agent, a
                 Pyth-fed on-chain oracle, and a circuit-breaker risk module to continuously optimize for
                 risk-adjusted yield. All decisions, signals, and rebalances are recorded on-chain and
-                governed by YLD-token holders, removing the opacity that has historically plagued
+                governed by MATIC stakers, removing the opacity that has historically plagued
                 yield-aggregator products.
               </P>
             </section>
@@ -177,11 +177,11 @@ export default function WhitepaperPage() {
                 strategy failures and is itself governed.
               </P>
 
-              <H3 id="governance-layer">2.5 Governance layer (Governor + Timelock + YLD Staking)</H3>
+              <H3 id="governance-layer">2.5 Governance layer (Governor + Timelock + MATIC Staking)</H3>
               <P>
-                YLD holders vote on strategy adds/removes, fee changes, risk parameters, and emergency
+                MATIC stakers vote on strategy adds/removes, fee changes, risk parameters, and emergency
                 actions. Every executed proposal flows through a 48-hour Timelock so users can exit before
-                state-changing decisions land. Staked YLD earns a share of the performance fee and counts
+                state-changing decisions land. Staked MATIC earns a share of the performance fee and counts
                 fully toward voting power.
               </P>
             </section>
@@ -207,7 +207,7 @@ export default function WhitepaperPage() {
     { "strategyId": "0x..", "weightBps": 2000 }
   ],
   "signals": [
-    "USDC lending APY +18bps over 24h",
+    "MATIC lending APY +18bps over 24h",
     "Volatility rising on volatile-pair LPs",
     "Risk score under threshold, rebalance allowed"
   ]
@@ -271,7 +271,7 @@ export default function WhitepaperPage() {
               <H2 id="governance">6. Governance</H2>
               <P>
                 Governance flows through OpenZeppelin&apos;s Governor + Timelock pattern. Voting power equals
-                YLD balance plus staked YLD, snapshotted at proposal creation. Anything that touches user
+                MATIC balance plus staked MATIC, snapshotted at proposal creation. Anything that touches user
                 funds — strategy adds, fee changes, risk-parameter updates — must go through the
                 <Mono>YieldMindGovernor</Mono> and queue through the 48-hour Timelock.
               </P>
@@ -382,7 +382,7 @@ export default function WhitepaperPage() {
                 open.
               </P>
               <Admonition kind="tip" title="Try it now">
-                Connect a wallet on Polygon Amoy, deposit a test USDC, and watch the agent reason and
+                Connect a wallet on Polygon Amoy, deposit some test MATIC, and watch the agent reason and
                 rebalance in real time on the{" "}
                 <Link href="/dashboard" className="underline hover:text-white">
                   dashboard

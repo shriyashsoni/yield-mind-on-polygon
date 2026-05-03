@@ -66,7 +66,7 @@ export default function GovernancePage() {
 
             <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">DAO Governance</h1>
             <p className="max-w-2xl text-sm text-white/55 md:text-base">
-              Live proposals from the deployed Governor contract on Polygon Amoy. YLD token holders vote in real time;
+              Live proposals from the deployed Governor contract on Polygon Amoy. MATIC stakers vote in real time;
               the AI agent honors any executed parameter changes within one rebalance cycle.
             </p>
           </div>
@@ -84,7 +84,7 @@ export default function GovernancePage() {
               value={fmtNum(votingPower, 2)}
               sub={`${sharePct.toFixed(2)}% of supply`}
             />
-            <StatTile label="YLD supply" value={fmtNum(totalSupply, 0)} sub="Snapshot of current circulating" />
+            <StatTile label="Voting MATIC" value={fmtNum(totalSupply, 0)} sub="Total stake-weighted supply" />
             <StatTile
               label="Connected"
               value={isConnected ? "Yes" : "No"}
@@ -95,7 +95,7 @@ export default function GovernancePage() {
           {!isConnected && (
             <div className="flex flex-col gap-3 border border-white/15 bg-white/[0.03] p-5 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-white/70">
-                Connect your wallet on Polygon Amoy to vote on live proposals. Your voting power equals your YLD balance.
+                Connect your wallet on Polygon Amoy to vote on live proposals. Your voting power equals your staked MATIC.
               </p>
               <button
                 type="button"
@@ -254,8 +254,8 @@ function ProposalRow({
       </div>
 
       <div className="mt-5 space-y-3">
-        <Bar label="For" pct={pctFor} value={`${fmtNum(f, 2)} YLD`} />
-        <Bar label="Against" pct={pctAgainst} value={`${fmtNum(a, 2)} YLD`} dim />
+              <Bar label="For" pct={pctFor} value={`${fmtNum(f, 2)} MATIC`} />
+              <Bar label="Against" pct={pctAgainst} value={`${fmtNum(a, 2)} MATIC`} dim />
       </div>
 
       <div className="mt-5 flex flex-wrap gap-3">

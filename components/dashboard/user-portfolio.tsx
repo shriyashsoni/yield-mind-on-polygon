@@ -8,7 +8,7 @@ import { fmtNum, fmtUsd, shortAddr } from "./format"
 
 export function UserPortfolio() {
   const { address, isConnected, connect } = useWeb3()
-  const { userShares, userBalance, usdcBalance, assetSymbol } = useVaultData()
+  const { userShares, userBalance, usdcBalance } = useVaultData()
   const { data } = useProtocolSnapshot()
   const sharePrice = data?.protocol?.sharePriceUsd ?? 1
   const totalShares = data?.protocol?.totalShares ?? 0
@@ -46,9 +46,9 @@ export function UserPortfolio() {
       }
     >
       <div className="grid grid-cols-2 gap-px bg-white/10 lg:grid-cols-4">
-        <Tile label={`${assetSymbol ?? "Asset"} balance`} value={fmtNum(wallet, 2)} sub={assetSymbol ?? ""} />
-        <Tile label="Vault shares" value={fmtNum(shares, 4)} sub="ymUSDC" />
-        <Tile label="Position value" value={fmtUsd(positionValue, 2)} sub={`@ $${sharePrice.toFixed(4)}/share`} />
+        <Tile label="MATIC balance" value={fmtNum(wallet, 2)} sub="MATIC" />
+        <Tile label="Vault shares" value={fmtNum(shares, 4)} sub="ymMATIC" />
+        <Tile label="Position value" value={fmtUsd(positionValue, 2)} sub={`@ ${sharePrice.toFixed(4)} MATIC/share`} />
         <Tile
           label="Share of vault"
           value={

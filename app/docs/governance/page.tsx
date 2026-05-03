@@ -29,7 +29,7 @@ export default function Page() {
 
       <H2 id="voting">Voting</H2>
       <P>
-        Voting weight equals your <code>YLD</code> balance at the proposal&apos;s snapshot block. Cast a vote with
+        Voting weight equals your staked <code>MATIC</code> at the proposal&apos;s snapshot block. Cast a vote with
         the standard OZ Governor entrypoint:
       </P>
       <CodeBlock

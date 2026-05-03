@@ -37,7 +37,7 @@ export default function Page() {
       <Ol>
         <li>Approve the vault to spend your asset (one-time per token).</li>
         <li>
-          Call <Mono>deposit(assets, receiver)</Mono> on the vault — the contract mints YLD shares 1:1 with your
+          Call <Mono>deposit(assets, receiver)</Mono> on the vault — the contract mints ymMATIC shares 1:1 with your
           contribution adjusted by the current share price.
         </li>
         <li>
@@ -70,7 +70,7 @@ await (await vault.deposit(amount, await signer.getAddress())).wait()`}
       <Ul>
         <li>Watch the AI insight panel update on each block.</li>
         <li>Read the streaming rebalance reasoning to understand why the agent acted.</li>
-        <li>Vote on an open governance proposal with your YLD shares.</li>
+        <li>Vote on an open governance proposal — your weight equals your staked MATIC.</li>
       </Ul>
     </DocPageShell>
   )
