@@ -1,4 +1,4 @@
-export type ActivityType = "deposit" | "withdraw"
+export type ActivityType = "deposit" | "withdraw" | "stake" | "unstake" | "claim" | "rebalance" | "vote"
 
 export interface UserActivity {
   id: string
