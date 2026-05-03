@@ -4,7 +4,6 @@ import Link from "next/link"
 import { SiteNav } from "@/components/landing/site-nav"
 import { SiteFooter } from "@/components/landing/site-footer"
 import { Admonition, CodeBlock, H2, H3, Hr, Mono, Ol, P, Stat, StatGrid, Ul } from "@/components/docs/primitives"
-import { CONTRACT_ADDRESSES } from "@/lib/contract-abis"
 
 const SECTIONS = [
   { id: "abstract", title: "Abstract" },
@@ -305,30 +304,50 @@ export default function WhitepaperPage() {
             <section className="space-y-3">
               <H2 id="contracts">8. Deployed Contracts</H2>
               <P>
-                All ten contracts of the Wave 6 release are deployed and verified on Polygon Amoy. The
-                addresses are wired directly into both the dashboard and the documentation; nothing is
-                stubbed or mocked.
+                All ten contracts of the Wave 6 release are deployed and verified on Polygon Amoy. To keep
+                this paper readable we don&apos;t inline raw addresses — the canonical, audited source of
+                truth lives in the open-source repository, and every contract is independently verifiable on
+                Polygonscan.
               </P>
-              <div className="not-prose mt-4 grid grid-cols-1 gap-px bg-white/10 md:grid-cols-2">
-                {Object.entries(CONTRACT_ADDRESSES.AMOY).map(([name, address]) => (
-                  <a
-                    key={name}
-                    href={`https://amoy.polygonscan.com/address/${address}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center justify-between bg-black/40 p-4 transition-colors hover:bg-white/[0.04]"
-                  >
-                    <div className="min-w-0">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
-                        {name}
-                      </div>
-                      <div className="mt-1 truncate font-mono text-xs text-white">{address}</div>
+              <div className="not-prose mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                <a
+                  href="https://github.com/shriyashsoni/yelid-mind-smart-contract"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-start justify-between gap-4 border border-white/12 bg-white/[0.02] p-5 transition-colors hover:border-white/30 hover:bg-white/[0.05]"
+                >
+                  <div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                      Source
                     </div>
-                    <span aria-hidden className="ml-3 font-mono text-xs text-white/40">
-                      ↗
-                    </span>
-                  </a>
-                ))}
+                    <div className="mt-1 text-sm font-medium text-white">View contracts on GitHub</div>
+                    <div className="mt-1 text-xs text-white/55">
+                      Solidity sources, ABIs, deployment scripts, and the addresses file.
+                    </div>
+                  </div>
+                  <span aria-hidden className="font-mono text-base text-white/40 transition-colors group-hover:text-white">
+                    ↗
+                  </span>
+                </a>
+                <a
+                  href="https://amoy.polygonscan.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-start justify-between gap-4 border border-white/12 bg-white/[0.02] p-5 transition-colors hover:border-white/30 hover:bg-white/[0.05]"
+                >
+                  <div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                      Verify
+                    </div>
+                    <div className="mt-1 text-sm font-medium text-white">Polygonscan (Amoy)</div>
+                    <div className="mt-1 text-xs text-white/55">
+                      Independently inspect storage, events, and verified bytecode.
+                    </div>
+                  </div>
+                  <span aria-hidden className="font-mono text-base text-white/40 transition-colors group-hover:text-white">
+                    ↗
+                  </span>
+                </a>
               </div>
             </section>
 

@@ -12,7 +12,8 @@ import { OraclePanel } from "@/components/dashboard/oracle-panel"
 import { RecentEvents } from "@/components/dashboard/recent-events"
 import { StrategyList } from "@/components/dashboard/strategy-list"
 import { UserPortfolio } from "@/components/dashboard/user-portfolio"
-import { ContractsHub } from "@/components/dashboard/contracts-hub"
+import { OpenSourceCard } from "@/components/dashboard/open-source-card"
+import { WalletGate } from "@/components/dashboard/wallet-gate"
 
 export default function DashboardPage() {
   return (
@@ -22,39 +23,41 @@ export default function DashboardPage() {
       <main className="pt-16">
         <DashboardHeader />
 
-        <div className="mx-auto max-w-[1400px] space-y-6 px-4 py-8 md:px-8">
-          {/* Tier 1: TVL / share price / APY / last rebalance */}
-          <ProtocolStats />
+        <WalletGate>
+          <div className="mx-auto max-w-[1400px] space-y-6 px-4 py-8 md:px-8">
+            {/* Tier 1: TVL / share price / APY / last rebalance */}
+            <ProtocolStats />
 
-          {/* Tier 2: AI insight (Groq) — full width */}
-          <AiInsightPanel />
+            {/* Tier 2: AI insight (Groq) — full width */}
+            <AiInsightPanel />
 
-          {/* Tier 3: Wallet position */}
-          <UserPortfolio />
+            {/* Tier 3: Wallet position */}
+            <UserPortfolio />
 
-          {/* Tier 4: Allocation + Risk + Oracle */}
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <AllocationChart />
+            {/* Tier 4: Allocation + Risk + Oracle */}
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <AllocationChart />
+              </div>
+              <RiskFeed />
             </div>
-            <RiskFeed />
+
+            {/* Tier 5: Streaming reasoning + Oracle feeds */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <RebalanceStream />
+              <OraclePanel />
+            </div>
+
+            {/* Tier 6: Strategy list */}
+            <StrategyList />
+
+            {/* Tier 7: Open source — GitHub link instead of raw addresses */}
+            <OpenSourceCard />
+
+            {/* Tier 8: Events */}
+            <RecentEvents />
           </div>
-
-          {/* Tier 5: Streaming reasoning + Oracle feeds */}
-          <div className="grid gap-6 lg:grid-cols-2">
-            <RebalanceStream />
-            <OraclePanel />
-          </div>
-
-          {/* Tier 6: Strategy list */}
-          <StrategyList />
-
-          {/* Tier 7: Smart-contract control center (all 11 contracts) */}
-          <ContractsHub />
-
-          {/* Tier 8: Events */}
-          <RecentEvents />
-        </div>
+        </WalletGate>
       </main>
 
       <SiteFooter />

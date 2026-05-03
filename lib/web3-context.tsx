@@ -1,190 +1,207 @@
 "use client"
 
-import type React from "react"
-import { createContext, useContext, useState, useEffect, useCallback } from "react"
-import { ethers } from "ethers"
+/**
+ * Web3 context — thin bridge over wagmi.
+ *
+ * The `useWeb3()` shape is identical to the previous implementation so every
+ * existing consumer (useVaultData, useContractAction, useRebalance,
+ * WalletGate, WalletConnectButton, the governance page, etc.) keeps working
+ * unchanged. The connection itself is now powered by **wagmi connectors**:
+ *
+ *   - `injected()`        — MetaMask, Rabby, Brave, OKX, Coinbase Wallet,
+ *                           and any EIP-6963 / EIP-1193 browser wallet.
+ *   - `walletConnect()`   — Trust, Rainbow, MetaMask Mobile, Zerion, Ledger
+ *                           Live, OKX, Safe, … via QR code or deeplink.
+ *
+ * The bridge takes whatever EIP-1193 provider wagmi exposes for the active
+ * connector and wraps it with ethers v6 so existing protocol hooks (which
+ * were authored against ethers) stay unchanged.
+ */
 
-interface Web3ContextType {
+import type React from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { ethers } from "ethers"
+import {
+  useAccount,
+  useChainId,
+  useConfig,
+  useConnect,
+  useDisconnect,
+  useSwitchChain,
+} from "wagmi"
+import { polygon, polygonAmoy } from "wagmi/chains"
+import { getAccount } from "wagmi/actions"
+import type { EIP1193Provider } from "viem"
+
+type ConnectorKind = "injected" | "walletconnect"
+
+interface Web3ContextValue {
   address: string | null
-  isConnected: boolean
   chainId: number | null
-  connect: () => Promise<void>
-  disconnect: () => void
-  switchNetwork: (chainId: number) => Promise<void>
+  isConnected: boolean
+  isConnecting: boolean
+  connector: ConnectorKind | null
   provider: ethers.BrowserProvider | null
   signer: ethers.Signer | null
+  connect: () => Promise<void>
+  connectWalletConnect: () => Promise<void>
+  disconnect: () => void
+  switchNetwork: (chainId: number) => Promise<void>
 }
 
-const Web3Context = createContext<Web3ContextType>({
+const Web3Context = createContext<Web3ContextValue>({
   address: null,
-  isConnected: false,
   chainId: null,
-  connect: async () => {},
-  disconnect: () => {},
-  switchNetwork: async () => {},
+  isConnected: false,
+  isConnecting: false,
+  connector: null,
   provider: null,
   signer: null,
+  connect: async () => {},
+  connectWalletConnect: async () => {},
+  disconnect: () => {},
+  switchNetwork: async () => {},
 })
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const [address, setAddress] = useState<string | null>(null)
-  const [chainId, setChainId] = useState<number | null>(null)
+  const config = useConfig()
+  const { address, isConnected, isConnecting: wagmiIsConnecting, connector: activeConnector } =
+    useAccount()
+  const chainId = useChainId()
+  const { connectors, connectAsync, isPending: connectPending } = useConnect()
+  const { disconnectAsync } = useDisconnect()
+  const { switchChainAsync } = useSwitchChain()
+
+  // Ethers wrappers around the active wagmi connector's EIP-1193 provider.
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null)
   const [signer, setSigner] = useState<ethers.Signer | null>(null)
-  const [isConnecting, setIsConnecting] = useState(false)
 
+  // Re-derive the ethers provider/signer whenever the active connection
+  // changes (connector, account, or chain).
   useEffect(() => {
-    if (typeof window === "undefined") return
+    let cancelled = false
 
-    const restoreConnection = async () => {
-      try {
-        const savedAddress = localStorage.getItem("web3_address")
-        const savedChainId = localStorage.getItem("web3_chainId")
-
-        if (savedAddress && window.ethereum) {
-          const ethersProvider = new ethers.BrowserProvider(window.ethereum)
-          const accounts = await ethersProvider.listAccounts()
-
-          if (accounts.length > 0) {
-            const network = await ethersProvider.getNetwork()
-            const ethSigner = await ethersProvider.getSigner()
-
-            setProvider(ethersProvider)
-            setSigner(ethSigner)
-            setAddress(accounts[0].address)
-            setChainId(Number(network.chainId))
-          }
+    async function syncEthers() {
+      if (!isConnected) {
+        if (!cancelled) {
+          setProvider(null)
+          setSigner(null)
         }
-      } catch (error) {
-        console.error("[v0] Failed to restore wallet connection:", error)
-        localStorage.removeItem("web3_address")
-        localStorage.removeItem("web3_chainId")
+        return
+      }
+
+      try {
+        const account = getAccount(config)
+        const eip1193 = (await account.connector?.getProvider()) as
+          | EIP1193Provider
+          | undefined
+        if (!eip1193 || cancelled) return
+
+        const browserProvider = new ethers.BrowserProvider(
+          eip1193 as unknown as ethers.Eip1193Provider,
+          "any",
+        )
+        const ethersSigner = await browserProvider.getSigner().catch(() => null)
+
+        if (!cancelled) {
+          setProvider(browserProvider)
+          setSigner(ethersSigner)
+        }
+      } catch (err) {
+        console.warn("[v0] Failed to derive ethers signer from wagmi connector", err)
+        if (!cancelled) {
+          setProvider(null)
+          setSigner(null)
+        }
       }
     }
 
-    restoreConnection()
-  }, [])
+    syncEthers()
+    return () => {
+      cancelled = true
+    }
+  }, [config, isConnected, address, chainId, activeConnector])
+
+  const findConnector = useCallback(
+    (id: "injected" | "walletConnect") => connectors.find((c) => c.id === id || c.type === id),
+    [connectors],
+  )
 
   const connect = useCallback(async () => {
-    if (typeof window === "undefined" || !window.ethereum) {
-      alert("Please install MetaMask or another Web3 wallet")
-      return
+    const injected = findConnector("injected") ?? connectors[0]
+    if (!injected) {
+      throw new Error(
+        "No browser wallet detected. Install MetaMask, Rabby, or use the WalletConnect option.",
+      )
     }
+    await connectAsync({ connector: injected, chainId: polygonAmoy.id })
+  }, [connectAsync, connectors, findConnector])
 
-    if (isConnecting) return
-    setIsConnecting(true)
-
-    try {
-      const ethersProvider = new ethers.BrowserProvider(window.ethereum)
-      const accounts = await ethersProvider.send("eth_requestAccounts", [])
-      const network = await ethersProvider.getNetwork()
-      const ethSigner = await ethersProvider.getSigner()
-
-      setProvider(ethersProvider)
-      setSigner(ethSigner)
-      setAddress(accounts[0])
-      setChainId(Number(network.chainId))
-
-      localStorage.setItem("web3_address", accounts[0])
-      localStorage.setItem("web3_chainId", String(network.chainId))
-    } catch (error) {
-      console.error("[v0] Failed to connect wallet:", error)
-    } finally {
-      setIsConnecting(false)
+  const connectWalletConnect = useCallback(async () => {
+    const wc = findConnector("walletConnect")
+    if (!wc) {
+      throw new Error(
+        "WalletConnect is not configured. Set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID and reload.",
+      )
     }
-  }, [isConnecting])
+    await connectAsync({ connector: wc, chainId: polygonAmoy.id })
+  }, [connectAsync, findConnector])
 
   const disconnect = useCallback(() => {
-    setAddress(null)
-    setChainId(null)
-    setProvider(null)
-    setSigner(null)
-    localStorage.removeItem("web3_address")
-    localStorage.removeItem("web3_chainId")
-  }, [])
+    void disconnectAsync()
+  }, [disconnectAsync])
 
-  const switchNetwork = useCallback(async (targetChainId: number) => {
-    if (!window.ethereum) return
-
-    try {
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: `0x${targetChainId.toString(16)}` }],
-      })
-      setChainId(targetChainId)
-      localStorage.setItem("web3_chainId", String(targetChainId))
-    } catch (error: any) {
-      if (error.code === 4902) {
-        const chainData =
-          targetChainId === 137
-            ? {
-                chainId: "0x89",
-                chainName: "Polygon Mainnet",
-                nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
-                rpcUrls: ["https://polygon-rpc.com"],
-                blockExplorerUrls: ["https://polygonscan.com"],
-              }
-            : {
-                chainId: "0x13882",
-                chainName: "Polygon Amoy Testnet",
-                nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
-                rpcUrls: ["https://rpc-amoy.polygon.technology"],
-                blockExplorerUrls: ["https://amoy.polygonscan.com"],
-              }
-
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [chainData],
-        })
+  const switchNetwork = useCallback(
+    async (target: number) => {
+      if (target !== polygon.id && target !== polygonAmoy.id) {
+        throw new Error(
+          `Unsupported chain ${target}. Only Polygon (137) and Polygon Amoy (80002) are supported.`,
+        )
       }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.ethereum) return
-
-    const handleAccountsChanged = (accounts: string[]) => {
-      console.log("[v0] Accounts changed:", accounts)
-      if (accounts.length === 0) {
-        disconnect()
-      } else {
-        setAddress(accounts[0])
-        localStorage.setItem("web3_address", accounts[0])
-      }
-    }
-
-    const handleChainChanged = (chainIdHex: string) => {
-      console.log("[v0] Chain changed to:", chainIdHex)
-      const newChainId = Number.parseInt(chainIdHex, 16)
-      setChainId(newChainId)
-      localStorage.setItem("web3_chainId", String(newChainId))
-    }
-
-    window.ethereum.on("accountsChanged", handleAccountsChanged)
-    window.ethereum.on("chainChanged", handleChainChanged)
-
-    return () => {
-      window.ethereum?.removeListener("accountsChanged", handleAccountsChanged)
-      window.ethereum?.removeListener("chainChanged", handleChainChanged)
-    }
-  }, [disconnect])
-
-  return (
-    <Web3Context.Provider
-      value={{
-        address,
-        isConnected: !!address,
-        chainId,
-        connect,
-        disconnect,
-        switchNetwork,
-        provider,
-        signer,
-      }}
-    >
-      {children}
-    </Web3Context.Provider>
+      await switchChainAsync({ chainId: target as 137 | 80002 })
+    },
+    [switchChainAsync],
   )
+
+  const connectorKind: ConnectorKind | null = useMemo(() => {
+    if (!activeConnector) return null
+    if (activeConnector.id === "walletConnect" || activeConnector.type === "walletConnect") {
+      return "walletconnect"
+    }
+    return "injected"
+  }, [activeConnector])
+
+  const value = useMemo<Web3ContextValue>(
+    () => ({
+      address: address ?? null,
+      chainId: chainId ?? null,
+      isConnected: Boolean(isConnected),
+      isConnecting: Boolean(wagmiIsConnecting || connectPending),
+      connector: connectorKind,
+      provider,
+      signer,
+      connect,
+      connectWalletConnect,
+      disconnect,
+      switchNetwork,
+    }),
+    [
+      address,
+      chainId,
+      isConnected,
+      wagmiIsConnecting,
+      connectPending,
+      connectorKind,
+      provider,
+      signer,
+      connect,
+      connectWalletConnect,
+      disconnect,
+      switchNetwork,
+    ],
+  )
+
+  return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
 }
 
-export const useWeb3 = () => useContext(Web3Context)
+export const useWeb3 = (): Web3ContextValue => useContext(Web3Context)
