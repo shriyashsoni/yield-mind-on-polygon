@@ -2,8 +2,9 @@
 
 import type { ReactNode } from "react"
 import { useEffect, useState } from "react"
-import { Loader2, ShieldCheck, Smartphone, Wallet } from "lucide-react"
+import { AlertCircle, Loader2, ShieldCheck, Smartphone, Wallet } from "lucide-react"
 import { useWeb3 } from "@/lib/web3-context"
+import { WALLETCONNECT_ENABLED } from "@/lib/wagmi"
 
 const FEATURES = [
   {
@@ -29,6 +30,7 @@ export function WalletGate({ children }: { children: ReactNode }) {
   }
   const [busy, setBusy] = useState<"injected" | "wc" | null>(null)
   const [hydrated, setHydrated] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Avoid flicker for already-connected users while the provider rehydrates from localStorage.
   useEffect(() => {
@@ -45,23 +47,47 @@ export function WalletGate({ children }: { children: ReactNode }) {
     )
   }
 
+  const formatErr = (err: unknown): string | null => {
+    const msg = err instanceof Error ? err.message : String(err ?? "")
+    // Silently ignore the very common "user closed modal / rejected request"
+    if (
+      /user (rejected|cancelled|closed)/i.test(msg) ||
+      /modal closed/i.test(msg) ||
+      /Connection request reset/i.test(msg)
+    ) {
+      return null
+    }
+    return msg || "Connection failed. Please try again."
+  }
+
   const onInjected = async () => {
+    setError(null)
     setBusy("injected")
     try {
       await connect()
+    } catch (err) {
+      console.log("[v0] injected connect failed", err)
+      setError(formatErr(err))
     } finally {
       setBusy(null)
     }
   }
 
   const onWalletConnect = async () => {
-    if (!connectWalletConnect) {
-      // WalletConnect plumbing is loaded lazily; fall back to injected if not yet available.
-      return onInjected()
+    setError(null)
+    if (!WALLETCONNECT_ENABLED) {
+      setError(
+        "WalletConnect isn't configured. Set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID in your project Vars and reload.",
+      )
+      return
     }
+    if (!connectWalletConnect) return onInjected()
     setBusy("wc")
     try {
       await connectWalletConnect()
+    } catch (err) {
+      console.log("[v0] WalletConnect connect failed", err)
+      setError(formatErr(err))
     } finally {
       setBusy(null)
     }
@@ -146,7 +172,7 @@ export function WalletGate({ children }: { children: ReactNode }) {
                 <Smartphone className="size-4" aria-hidden />
                 <div>
                   <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
-                    Universal · Mobile
+                    {WALLETCONNECT_ENABLED ? "Universal · Mobile" : "Not configured"}
                   </div>
                   <div className="text-sm font-semibold">WalletConnect</div>
                 </div>
@@ -160,6 +186,16 @@ export function WalletGate({ children }: { children: ReactNode }) {
               )}
             </button>
           </div>
+
+          {error ? (
+            <div
+              role="alert"
+              className="flex items-start gap-2 border border-white/20 bg-white/[0.04] p-3 text-xs text-white/80"
+            >
+              <AlertCircle className="size-4 shrink-0 text-white" aria-hidden />
+              <span className="leading-relaxed">{error}</span>
+            </div>
+          ) : null}
 
           <div className="border-t border-white/10 pt-5">
             <p className="text-[11px] leading-relaxed text-white/40">

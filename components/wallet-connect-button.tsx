@@ -1,8 +1,10 @@
 "use client"
 
 import { useWeb3 } from "@/lib/web3-context"
+import { WALLETCONNECT_ENABLED } from "@/lib/wagmi"
 import { Button } from "@/components/ui/button"
 import { Wallet, LogOut, AlertCircle, Smartphone } from "lucide-react"
+import { toast } from "sonner"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,6 +47,33 @@ export function WalletConnectButton() {
     refetchInterval: 10000,
   })
 
+  const handleConnect = async (kind: "injected" | "wc") => {
+    try {
+      if (kind === "wc") {
+        if (!WALLETCONNECT_ENABLED) {
+          toast.error(
+            "WalletConnect isn't configured. Set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID and reload.",
+          )
+          return
+        }
+        await connectWalletConnect()
+      } else {
+        await connect()
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err ?? "")
+      if (
+        /user (rejected|cancelled|closed)/i.test(msg) ||
+        /modal closed/i.test(msg) ||
+        /Connection request reset/i.test(msg)
+      ) {
+        return // user-cancelled, stay quiet
+      }
+      console.log("[v0] wallet connect failed", err)
+      toast.error(msg || "Connection failed. Please try again.")
+    }
+  }
+
   if (!isConnected) {
     return (
       <DropdownMenu>
@@ -57,13 +86,22 @@ export function WalletConnectButton() {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Choose a wallet</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={connect} className="cursor-pointer">
+          <DropdownMenuItem onClick={() => handleConnect("injected")} className="cursor-pointer">
             <Wallet className="w-4 h-4 mr-2" />
             Browser wallet
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={connectWalletConnect} className="cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => handleConnect("wc")}
+            className="cursor-pointer"
+            disabled={!WALLETCONNECT_ENABLED}
+          >
             <Smartphone className="w-4 h-4 mr-2" />
             WalletConnect (mobile)
+            {!WALLETCONNECT_ENABLED ? (
+              <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground">
+                Off
+              </span>
+            ) : null}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
