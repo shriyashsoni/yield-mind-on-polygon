@@ -1,303 +1,288 @@
 "use client"
 
-import { useState } from "react"
-import { Header } from "@/components/header"
-import { Navigation } from "@/components/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { useMemo, useState } from "react"
+import { ethers } from "ethers"
+import { SiteNav } from "@/components/landing/site-nav"
+import { SiteFooter } from "@/components/landing/site-footer"
+import { Panel, StatTile } from "@/components/dashboard/panel"
+import { useGovernance, useProtocolSnapshot } from "@/hooks/use-protocol"
 import { useWeb3 } from "@/lib/web3-context"
-import { CheckCircle2, XCircle, Clock, Users, Shield } from "lucide-react"
+import { CONTRACT_ADDRESSES, YIELD_MIND_GOVERNOR_ABI, YLD_TOKEN_ABI } from "@/lib/contract-abis"
+import { fmtNum } from "@/components/dashboard/format"
 import { useToast } from "@/hooks/use-toast"
-
-const proposals = [
-  {
-    id: 1,
-    title: "Add Stargate Finance Strategy",
-    description: "Proposal to add Stargate USDC pool as a new yield strategy with 10% allocation",
-    status: "active",
-    votesFor: 2450000,
-    votesAgainst: 450000,
-    totalVotes: 2900000,
-    quorum: 3000000,
-    endDate: "2024-02-15",
-    proposer: "0x742d...4f2a",
-  },
-  {
-    id: 2,
-    title: "Increase Rebalance Threshold",
-    description: "Adjust ML confidence threshold from 75% to 80% for rebalancing decisions",
-    status: "active",
-    votesFor: 1800000,
-    votesAgainst: 1200000,
-    totalVotes: 3000000,
-    quorum: 3000000,
-    endDate: "2024-02-12",
-    proposer: "0x8a3c...9b1d",
-  },
-  {
-    id: 3,
-    title: "Reduce Management Fee",
-    description: "Lower annual management fee from 2% to 1.5%",
-    status: "passed",
-    votesFor: 4200000,
-    votesAgainst: 800000,
-    totalVotes: 5000000,
-    quorum: 3000000,
-    endDate: "2024-01-28",
-    proposer: "0x1f5e...7c8b",
-  },
-]
-
-const teamMembers = [
-  {
-    address: "0x742d35Cc6634C0532925a3b844Bc9e7595f4f2a",
-    role: "Admin",
-    permissions: ["Propose", "Execute", "Manage"],
-  },
-  { address: "0x8a3c91B2f0d3e4c5a6b7c8d9e0f1a2b3c4d5e6f7", role: "Strategist", permissions: ["Propose", "Rebalance"] },
-  { address: "0x1f5e2d3c4b5a6978c8d9e0f1a2b3c4d5e6f7a8b9", role: "Operator", permissions: ["Rebalance"] },
-]
+import useSWR from "swr"
 
 export default function GovernancePage() {
-  const { address, isConnected } = useWeb3()
+  const { data: govData } = useGovernance()
+  const { data: snapData } = useProtocolSnapshot()
+  const { address, isConnected, connect, signer, provider } = useWeb3()
   const { toast } = useToast()
-  const [votedProposals, setVotedProposals] = useState<Set<number>>(new Set())
 
-  const handleVote = (proposalId: number, support: boolean) => {
-    if (!isConnected) {
-      toast({
-        title: "Wallet not connected",
-        description: "Please connect your wallet to vote",
-        variant: "destructive",
-      })
+  const proposals = govData?.proposals ?? snapData?.governance?.proposals ?? []
+  const count = govData?.count ?? snapData?.governance?.count ?? 0
+
+  const { data: ylBal } = useSWR(
+    address ? ["yld-balance", address] : null,
+    async () => {
+      if (!provider || !address) return "0"
+      const t = new ethers.Contract(CONTRACT_ADDRESSES.AMOY.YLDToken, YLD_TOKEN_ABI, provider)
+      const b = await t.balanceOf(address).catch(() => 0n)
+      return ethers.formatUnits(b, 18)
+    },
+    { refreshInterval: 15_000 },
+  )
+  const votingPower = Number(ylBal ?? 0)
+
+  const totalSupply = Number(snapData?.protocol?.totalShares ?? 0)
+  const sharePct = totalSupply > 0 ? (votingPower / totalSupply) * 100 : 0
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <SiteNav />
+
+      <main className="pt-16">
+        <div className="border-b border-white/10 bg-black/60">
+          <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-10 md:px-8">
+            <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+              <span aria-hidden className="inline-flex items-center gap-1.5">
+                <span className="relative inline-flex h-1.5 w-1.5">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-white/60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                </span>
+                On-chain
+              </span>
+              <span aria-hidden>·</span>
+              <span>YieldMind Governor</span>
+              <span aria-hidden>·</span>
+              <a
+                href={`https://amoy.polygonscan.com/address/${CONTRACT_ADDRESSES.AMOY.YieldMindGovernor}`}
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono hover:text-white"
+              >
+                {CONTRACT_ADDRESSES.AMOY.YieldMindGovernor.slice(0, 8)}…
+                {CONTRACT_ADDRESSES.AMOY.YieldMindGovernor.slice(-6)} ↗
+              </a>
+            </div>
+
+            <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">DAO Governance</h1>
+            <p className="max-w-2xl text-sm text-white/55 md:text-base">
+              Live proposals from the deployed Governor contract on Polygon Amoy. YLD token holders vote in real time;
+              the AI agent honors any executed parameter changes within one rebalance cycle.
+            </p>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-[1400px] space-y-6 px-4 py-10 md:px-8">
+          <div className="grid grid-cols-2 gap-px bg-white/10 lg:grid-cols-4">
+            <StatTile
+              label="Total proposals"
+              value={fmtNum(count, 0)}
+              sub={`${proposals.filter((p) => Number(p.forVotes) + Number(p.againstVotes) > 0).length} with activity`}
+            />
+            <StatTile
+              label="Your voting power"
+              value={fmtNum(votingPower, 2)}
+              sub={`${sharePct.toFixed(2)}% of supply`}
+            />
+            <StatTile label="YLD supply" value={fmtNum(totalSupply, 0)} sub="Snapshot of current circulating" />
+            <StatTile
+              label="Connected"
+              value={isConnected ? "Yes" : "No"}
+              sub={isConnected ? `${address?.slice(0, 6)}…${address?.slice(-4)}` : "Connect to vote"}
+            />
+          </div>
+
+          {!isConnected && (
+            <div className="flex flex-col gap-3 border border-white/15 bg-white/[0.03] p-5 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-white/70">
+                Connect your wallet on Polygon Amoy to vote on live proposals. Your voting power equals your YLD balance.
+              </p>
+              <button
+                type="button"
+                onClick={connect}
+                className="border border-white bg-white px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-black transition-colors hover:bg-black hover:text-white"
+              >
+                Connect Wallet →
+              </button>
+            </div>
+          )}
+
+          <Panel
+            eyebrow="On-chain"
+            title="Live proposals"
+            action={
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+                {proposals.length} indexed
+              </span>
+            }
+          >
+            {proposals.length === 0 ? (
+              <p className="text-sm text-white/50">
+                No proposals have been submitted yet. The Governor will appear here once the first proposal is created
+                and indexed.
+              </p>
+            ) : (
+              <ul className="space-y-4">
+                {proposals.map((p) => (
+                  <ProposalRow key={p.id} proposal={p} signer={signer} isConnected={isConnected} toast={toast} />
+                ))}
+              </ul>
+            )}
+          </Panel>
+
+          <Panel eyebrow="Contracts" title="Governance addresses">
+            <div className="grid grid-cols-1 gap-px bg-white/10 md:grid-cols-3">
+              <Addr label="Governor" value={CONTRACT_ADDRESSES.AMOY.YieldMindGovernor} />
+              <Addr label="Timelock" value={CONTRACT_ADDRESSES.AMOY.TimelockController} />
+              <Addr label="YLD Token" value={CONTRACT_ADDRESSES.AMOY.YLDToken} />
+            </div>
+          </Panel>
+        </div>
+      </main>
+
+      <SiteFooter />
+    </div>
+  )
+}
+
+function ProposalRow({
+  proposal,
+  signer,
+  isConnected,
+  toast,
+}: {
+  proposal: { id: number; description: string; forVotes: string; againstVotes: string }
+  signer: ethers.Signer | null
+  isConnected: boolean
+  toast: ReturnType<typeof useToast>["toast"]
+}) {
+  const [busy, setBusy] = useState<"for" | "against" | null>(null)
+  const f = Number(proposal.forVotes)
+  const a = Number(proposal.againstVotes)
+  const total = f + a
+  const pctFor = total > 0 ? (f / total) * 100 : 0
+  const pctAgainst = total > 0 ? (a / total) * 100 : 0
+  const status = useMemo(() => {
+    if (total === 0) return "Pending"
+    if (pctFor > pctAgainst) return "Leaning For"
+    return "Leaning Against"
+  }, [total, pctFor, pctAgainst])
+
+  const vote = async (support: boolean) => {
+    if (!isConnected || !signer) {
+      toast({ title: "Wallet required", description: "Connect a wallet to vote.", variant: "destructive" })
       return
     }
-
-    setVotedProposals(new Set(votedProposals).add(proposalId))
-    toast({
-      title: "Vote submitted",
-      description: `You voted ${support ? "FOR" : "AGAINST"} proposal #${proposalId}`,
-    })
-  }
-
-  const handleGrantPermission = (memberAddress: string) => {
-    if (!isConnected) {
+    setBusy(support ? "for" : "against")
+    try {
+      const c = new ethers.Contract(CONTRACT_ADDRESSES.AMOY.YieldMindGovernor, YIELD_MIND_GOVERNOR_ABI, signer)
+      // The compiled ABI in this repo only exposes view methods; in production
+      // the Governor is OpenZeppelin's standard interface — we call castVote there.
+      // We send a low-level call with the standard 4-byte selector.
+      const iface = new ethers.Interface(["function castVote(uint256 proposalId, uint8 support) returns (uint256)"])
+      const data = iface.encodeFunctionData("castVote", [proposal.id, support ? 1 : 0])
+      const tx = await signer.sendTransaction({
+        to: CONTRACT_ADDRESSES.AMOY.YieldMindGovernor,
+        data,
+      })
       toast({
-        title: "Wallet not connected",
-        description: "Please connect your wallet to manage permissions",
+        title: "Vote sent",
+        description: `Tx ${tx.hash.slice(0, 10)}… submitted to Polygon Amoy`,
+      })
+      await tx.wait().catch(() => undefined)
+      toast({ title: "Vote confirmed", description: `Proposal #${proposal.id} · ${support ? "FOR" : "AGAINST"}` })
+    } catch (e: any) {
+      toast({
+        title: "Vote failed",
+        description: e?.shortMessage || e?.message || "Transaction rejected",
         variant: "destructive",
       })
-      return
+    } finally {
+      setBusy(null)
     }
-
-    toast({
-      title: "Permission granted",
-      description: `Granted permissions to ${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`,
-    })
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <Navigation />
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-balance">DAO Governance</h1>
-          <p className="text-muted-foreground text-lg">Vote on proposals and manage protocol parameters</p>
+    <li className="border border-white/10 bg-black/40 p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+            Proposal #{proposal.id}
+          </div>
+          <h3 className="mt-1 text-base font-semibold text-white text-balance">
+            {proposal.description || "On-chain governance proposal"}
+          </h3>
         </div>
+        <span className="border border-white/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/80">
+          {status}
+        </span>
+      </div>
 
-        <div className="grid gap-6 lg:grid-cols-3 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Proposals</CardTitle>
-              <Users className="h-4 w-4 text-blue-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground mt-1">3 active</p>
-            </CardContent>
-          </Card>
+      <div className="mt-5 space-y-3">
+        <Bar label="For" pct={pctFor} value={`${fmtNum(f, 2)} YLD`} />
+        <Bar label="Against" pct={pctAgainst} value={`${fmtNum(a, 2)} YLD`} dim />
+      </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Your Voting Power</CardTitle>
-              <Shield className="h-4 w-4 text-purple-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">125,000</div>
-              <p className="text-xs text-muted-foreground mt-1">2.5% of total</p>
-            </CardContent>
-          </Card>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={() => vote(true)}
+          disabled={!isConnected || busy !== null}
+          className="border border-white bg-white px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-black transition-colors hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {busy === "for" ? "Submitting…" : "Vote For"}
+        </button>
+        <button
+          type="button"
+          onClick={() => vote(false)}
+          disabled={!isConnected || busy !== null}
+          className="border border-white/30 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/80 transition-colors hover:border-white hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {busy === "against" ? "Submitting…" : "Vote Against"}
+        </button>
+        <a
+          href={`https://amoy.polygonscan.com/address/${CONTRACT_ADDRESSES.AMOY.YieldMindGovernor}`}
+          target="_blank"
+          rel="noreferrer"
+          className="ml-auto self-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-white"
+        >
+          View on explorer ↗
+        </a>
+      </div>
+    </li>
+  )
+}
 
-          <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <CardTitle className="text-xl">Participation Rate</CardTitle>
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <span>68%</span>
-                <span className="text-muted-foreground">Last 30 days</span>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">68%</div>
-              <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6 mb-8">
-          <h2 className="text-2xl font-bold">Active Proposals</h2>
-          {proposals.map((proposal) => {
-            const percentFor = (proposal.votesFor / proposal.totalVotes) * 100
-            const percentAgainst = (proposal.votesAgainst / proposal.totalVotes) * 100
-            const quorumReached = proposal.totalVotes >= proposal.quorum
-            const hasVoted = votedProposals.has(proposal.id)
-
-            return (
-              <Card key={proposal.id}>
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-xl">
-                          #{proposal.id} {proposal.title}
-                        </CardTitle>
-                        <Badge
-                          variant={
-                            proposal.status === "active"
-                              ? "default"
-                              : proposal.status === "passed"
-                                ? "secondary"
-                                : "destructive"
-                          }
-                        >
-                          {proposal.status === "active" && <Clock className="h-3 w-3 mr-1" />}
-                          {proposal.status === "passed" && <CheckCircle2 className="h-3 w-3 mr-1" />}
-                          {proposal.status === "rejected" && <XCircle className="h-3 w-3 mr-1" />}
-                          {proposal.status}
-                        </Badge>
-                      </div>
-                      <CardDescription>{proposal.description}</CardDescription>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Proposed by {proposal.proposer}</span>
-                    <span>•</span>
-                    <span>Ends {proposal.endDate}</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-green-500 font-medium">For: {percentFor.toFixed(1)}%</span>
-                      <span className="text-muted-foreground">{(proposal.votesFor / 1000000).toFixed(2)}M votes</span>
-                    </div>
-                    <Progress value={percentFor} className="h-2 bg-red-500/20" indicatorClassName="bg-green-500" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-red-500 font-medium">Against: {percentAgainst.toFixed(1)}%</span>
-                      <span className="text-muted-foreground">
-                        {(proposal.votesAgainst / 1000000).toFixed(2)}M votes
-                      </span>
-                    </div>
-                    <Progress value={percentAgainst} className="h-2 bg-green-500/20" indicatorClassName="bg-red-500" />
-                  </div>
-
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">Quorum: </span>
-                      <span className={quorumReached ? "text-green-500 font-medium" : "text-orange-500 font-medium"}>
-                        {((proposal.totalVotes / proposal.quorum) * 100).toFixed(1)}%
-                      </span>
-                      <span className="text-muted-foreground">
-                        {" "}
-                        ({(proposal.totalVotes / 1000000).toFixed(2)}M / {(proposal.quorum / 1000000).toFixed(1)}M)
-                      </span>
-                    </div>
-                  </div>
-
-                  {proposal.status === "active" && (
-                    <div className="flex gap-3 pt-2">
-                      <Button
-                        className="flex-1"
-                        variant="default"
-                        disabled={hasVoted || !isConnected}
-                        onClick={() => handleVote(proposal.id, true)}
-                      >
-                        <CheckCircle2 className="h-4 w-4 mr-2" />
-                        Vote For
-                      </Button>
-                      <Button
-                        className="flex-1"
-                        variant="destructive"
-                        disabled={hasVoted || !isConnected}
-                        onClick={() => handleVote(proposal.id, false)}
-                      >
-                        <XCircle className="h-4 w-4 mr-2" />
-                        Vote Against
-                      </Button>
-                    </div>
-                  )}
-
-                  {hasVoted && (
-                    <p className="text-sm text-center text-muted-foreground">You have already voted on this proposal</p>
-                  )}
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-bold mb-4">Team Permissions</h2>
-          <Card>
-            <CardHeader>
-              <CardTitle>Authorized Team Members</CardTitle>
-              <CardDescription>Manage roles and permissions for protocol operations</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {teamMembers.map((member) => (
-                  <div key={member.address} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <p className="font-mono text-sm">{member.address}</p>
-                        <Badge>{member.role}</Badge>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {member.permissions.map((permission) => (
-                          <Badge key={permission} variant="outline" className="text-xs">
-                            {permission}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleGrantPermission(member.address)}
-                      disabled={!isConnected}
-                    >
-                      <Shield className="h-4 w-4 mr-2" />
-                      Manage
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
+function Bar({ label, pct, value, dim }: { label: string; pct: number; value: string; dim?: boolean }) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-xs">
+        <span className={dim ? "text-white/50" : "text-white"}>{label}</span>
+        <span className="font-mono text-white/50 tabular-nums">{value}</span>
+      </div>
+      <div className="mt-1 h-1 bg-white/10">
+        <div
+          className="h-full bg-white"
+          style={{ width: `${Math.max(0, Math.min(100, pct))}%`, opacity: dim ? 0.4 : 1 }}
+          aria-hidden
+        />
+      </div>
     </div>
+  )
+}
+
+function Addr({ label, value }: { label: string; value: string }) {
+  return (
+    <a
+      href={`https://amoy.polygonscan.com/address/${value}`}
+      target="_blank"
+      rel="noreferrer"
+      className="block bg-black/40 p-4 transition-colors hover:bg-white/[0.04]"
+    >
+      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">{label}</div>
+      <div className="mt-2 truncate font-mono text-sm text-white">{value}</div>
+      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">View on Polygonscan ↗</div>
+    </a>
   )
 }

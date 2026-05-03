@@ -1,20 +1,25 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Menu, X } from "lucide-react"
 
 const navLinks = [
-  { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#how" },
-  { label: "Polygon", href: "#polygon" },
+  { label: "Features", href: "#features", anchor: true },
+  { label: "How It Works", href: "#how", anchor: true },
+  { label: "Polygon", href: "#polygon", anchor: true },
   { label: "Governance", href: "/governance" },
   { label: "Docs", href: "/docs" },
-]
+] as const
 
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  const onLanding = pathname === "/"
+  const resolve = (l: { href: string; anchor?: boolean }) =>
+    l.anchor && !onLanding ? `/${l.href}` : l.href
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -42,7 +47,7 @@ export function SiteNav() {
           {navLinks.map((l) => (
             <li key={l.href}>
               <Link
-                href={l.href}
+                href={resolve(l)}
                 className="text-sm font-medium text-white/55 transition-colors hover:text-white"
               >
                 {l.label}
@@ -78,7 +83,7 @@ export function SiteNav() {
             {navLinks.map((l) => (
               <li key={l.href}>
                 <Link
-                  href={l.href}
+                  href={resolve(l)}
                   onClick={() => setOpen(false)}
                   className="block rounded-md px-3 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
                 >

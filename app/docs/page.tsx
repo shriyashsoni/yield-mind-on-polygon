@@ -1,323 +1,348 @@
 "use client"
 
-import { Header } from "@/components/header"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Book, Code, Wallet, TrendingUp, Shield, Settings } from "lucide-react"
+import { useState } from "react"
+import { SiteNav } from "@/components/landing/site-nav"
+import { SiteFooter } from "@/components/landing/site-footer"
+import { CONTRACT_ADDRESSES } from "@/lib/contract-abis"
+
+const SECTIONS = [
+  { id: "overview", label: "Overview" },
+  { id: "architecture", label: "Architecture" },
+  { id: "ai-agent", label: "AI Agent" },
+  { id: "vault", label: "Vault & Shares" },
+  { id: "risk", label: "Risk Guard" },
+  { id: "governance", label: "Governance" },
+  { id: "contracts", label: "Contracts" },
+  { id: "api", label: "API Reference" },
+  { id: "integrate", label: "Integrate" },
+]
 
 export default function DocsPage() {
+  const [active, setActive] = useState("overview")
+
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <div className="min-h-screen bg-black text-white">
+      <SiteNav />
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-5xl font-bold">Documentation</h1>
-            <p className="text-xl text-muted-foreground">Everything you need to know about using YieldMind</p>
+      <main className="pt-16">
+        <div className="border-b border-white/10 bg-black/60">
+          <div className="mx-auto flex max-w-[1400px] flex-col gap-3 px-4 py-10 md:px-8">
+            <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+              <span>Documentation</span>
+              <span aria-hidden>·</span>
+              <span>Polygon Amoy</span>
+              <span aria-hidden>·</span>
+              <span>v4 Protocol</span>
+            </div>
+            <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">
+              Build with the YieldMind Protocol
+            </h1>
+            <p className="max-w-3xl text-sm text-white/55 md:text-base">
+              YieldMind is an AI-driven yield optimisation protocol on Polygon. This reference covers the deployed
+              contracts, the autonomous agent loop, the on-chain risk system, governance, and the public API used by
+              this dashboard.
+            </p>
           </div>
-
-          <Tabs defaultValue="getting-started" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-              <TabsTrigger value="getting-started">Getting Started</TabsTrigger>
-              <TabsTrigger value="vaults">Vaults</TabsTrigger>
-              <TabsTrigger value="strategies">Strategies</TabsTrigger>
-              <TabsTrigger value="governance">Governance</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-              <TabsTrigger value="api">API</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="getting-started" className="space-y-6">
-              <Card>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Book className="w-8 h-8 text-primary" />
-                    <h2 className="text-3xl font-bold">Getting Started</h2>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">1. Connect Your Wallet</h3>
-                      <p className="text-muted-foreground leading-relaxed mb-4">
-                        Click the "Connect Wallet" button in the top right corner and select your preferred wallet
-                        provider. Make sure you're connected to the Polygon network.
-                      </p>
-                      <div className="p-4 rounded-lg bg-muted">
-                        <code className="text-sm">Network: Polygon (Chain ID: 137)</code>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">2. Choose a Vault</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Browse our available vaults in the Products section. Each vault has different risk profiles and
-                        target APYs. Select one that matches your investment goals.
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">3. Deposit Funds</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Enter the amount you want to deposit and approve the transaction. You'll receive vault shares
-                        representing your portion of the pool.
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">4. Monitor Performance</h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Track your portfolio performance in the Dashboard. Our AI automatically rebalances your funds
-                        across protocols to maximize yields.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="vaults" className="space-y-6">
-              <Card>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Wallet className="w-8 h-8 text-primary" />
-                    <h2 className="text-3xl font-bold">Understanding Vaults</h2>
-                  </div>
-
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Vaults are smart contracts that pool user funds and automatically allocate them across multiple DeFi
-                    protocols to maximize yields while managing risk.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Conservative Vault</h3>
-                      <p className="text-muted-foreground mb-3">
-                        Low-risk strategies focusing on stable yields from established protocols like Aave and Compound.
-                      </p>
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-green-600 dark:text-green-400 font-medium">Target APY: 8-12%</span>
-                        <span className="text-muted-foreground">Risk: Low</span>
-                      </div>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Balanced Vault</h3>
-                      <p className="text-muted-foreground mb-3">
-                        Moderate risk with diversified strategies across lending, liquidity provision, and yield
-                        farming.
-                      </p>
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-blue-600 dark:text-blue-400 font-medium">Target APY: 15-25%</span>
-                        <span className="text-muted-foreground">Risk: Medium</span>
-                      </div>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Aggressive Vault</h3>
-                      <p className="text-muted-foreground mb-3">
-                        Higher risk strategies targeting maximum yields through advanced DeFi protocols and strategies.
-                      </p>
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-orange-600 dark:text-orange-400 font-medium">Target APY: 30-50%</span>
-                        <span className="text-muted-foreground">Risk: High</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="strategies" className="space-y-6">
-              <Card>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <TrendingUp className="w-8 h-8 text-primary" />
-                    <h2 className="text-3xl font-bold">Yield Strategies</h2>
-                  </div>
-
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Our AI engine analyzes multiple yield strategies and automatically allocates funds to optimize
-                    risk-adjusted returns.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Lending Strategies</h3>
-                      <p className="text-muted-foreground">
-                        Supply assets to lending protocols like Aave and Compound to earn interest from borrowers. Low
-                        risk with stable returns.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Liquidity Provision</h3>
-                      <p className="text-muted-foreground">
-                        Provide liquidity to DEX pools on Balancer, Curve, and QuickSwap to earn trading fees and
-                        incentive rewards.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Yield Farming</h3>
-                      <p className="text-muted-foreground">
-                        Stake LP tokens in farms to earn additional protocol tokens. Higher yields but requires active
-                        management.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Arbitrage Opportunities</h3>
-                      <p className="text-muted-foreground">
-                        Exploit price differences across protocols to generate additional returns with minimal risk.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="governance" className="space-y-6">
-              <Card>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Settings className="w-8 h-8 text-primary" />
-                    <h2 className="text-3xl font-bold">DAO Governance</h2>
-                  </div>
-
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    YieldMind is governed by its community through a decentralized autonomous organization (DAO). Token
-                    holders can propose and vote on important protocol decisions.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Voting Power</h3>
-                      <p className="text-muted-foreground">
-                        Your voting power is proportional to your vault share holdings. The more you have invested, the
-                        more influence you have on governance decisions.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Proposal Types</h3>
-                      <ul className="list-disc list-inside text-muted-foreground space-y-2 mt-3">
-                        <li>Strategy additions or removals</li>
-                        <li>Fee structure changes</li>
-                        <li>Risk parameter adjustments</li>
-                        <li>Protocol integrations</li>
-                        <li>Treasury management</li>
-                      </ul>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Voting Process</h3>
-                      <ol className="list-decimal list-inside text-muted-foreground space-y-2 mt-3">
-                        <li>Proposal submission with detailed description</li>
-                        <li>Community discussion period (3 days)</li>
-                        <li>Voting period (7 days)</li>
-                        <li>Execution if quorum and majority reached</li>
-                      </ol>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="security" className="space-y-6">
-              <Card>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Shield className="w-8 h-8 text-primary" />
-                    <h2 className="text-3xl font-bold">Security</h2>
-                  </div>
-
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Security is our top priority. We employ multiple layers of protection to keep your funds safe.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Smart Contract Audits</h3>
-                      <p className="text-muted-foreground">
-                        All our smart contracts have been audited by leading security firms including CertiK and
-                        OpenZeppelin. Audit reports are publicly available.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Risk Management</h3>
-                      <p className="text-muted-foreground">
-                        Automated circuit breakers pause operations if abnormal conditions are detected. Position limits
-                        prevent over-concentration in any single protocol.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Insurance Coverage</h3>
-                      <p className="text-muted-foreground">
-                        Vault deposits are covered by DeFi insurance protocols, providing an additional layer of
-                        protection against smart contract exploits.
-                      </p>
-                    </div>
-
-                    <div className="p-6 rounded-lg border bg-card">
-                      <h3 className="text-xl font-semibold mb-2">Bug Bounty Program</h3>
-                      <p className="text-muted-foreground">
-                        We offer rewards up to $100,000 for responsible disclosure of security vulnerabilities. Contact
-                        security@yieldmind.io to report issues.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="api" className="space-y-6">
-              <Card>
-                <CardContent className="p-8 space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Code className="w-8 h-8 text-primary" />
-                    <h2 className="text-3xl font-bold">Developer API</h2>
-                  </div>
-
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Integrate YieldMind into your applications using our smart contract interfaces and REST API.
-                  </p>
-
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">Smart Contract Addresses</h3>
-                      <div className="p-4 rounded-lg bg-muted space-y-2 font-mono text-sm">
-                        <div>YieldVault: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb</div>
-                        <div>RebalanceOracle: 0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063</div>
-                        <div>BalancerStrategy: 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174</div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">REST API Endpoints</h3>
-                      <div className="space-y-3">
-                        <div className="p-4 rounded-lg border bg-card">
-                          <code className="text-sm text-primary">GET /api/vaults</code>
-                          <p className="text-muted-foreground mt-2">Get list of all vaults with current APY and TVL</p>
-                        </div>
-                        <div className="p-4 rounded-lg border bg-card">
-                          <code className="text-sm text-primary">GET /api/strategies</code>
-                          <p className="text-muted-foreground mt-2">Get active strategies and their allocations</p>
-                        </div>
-                        <div className="p-4 rounded-lg border bg-card">
-                          <code className="text-sm text-primary">GET /api/ml/recommendations</code>
-                          <p className="text-muted-foreground mt-2">Get latest AI recommendations for rebalancing</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
         </div>
+
+        <div className="mx-auto grid max-w-[1400px] gap-12 px-4 py-12 md:grid-cols-[220px_1fr] md:px-8">
+          {/* Sidebar */}
+          <aside className="md:sticky md:top-24 md:self-start">
+            <nav aria-label="Docs sections" className="border border-white/10">
+              <ul>
+                {SECTIONS.map((s, i) => (
+                  <li key={s.id}>
+                    <a
+                      href={`#${s.id}`}
+                      onClick={() => setActive(s.id)}
+                      className={[
+                        "flex items-center justify-between border-white/10 px-3 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors",
+                        i > 0 ? "border-t" : "",
+                        active === s.id ? "bg-white text-black" : "text-white/60 hover:bg-white/5 hover:text-white",
+                      ].join(" ")}
+                    >
+                      <span>{s.label}</span>
+                      <span aria-hidden>→</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+
+          {/* Content */}
+          <article className="space-y-16 text-white/80">
+            <Section id="overview" eyebrow="01" title="Overview">
+              <P>
+                YieldMind is an autonomous DeFi vault that pools deposits, scores opportunities with an AI agent, and
+                rebalances across whitelisted strategies (Aave, Compound, Curve, Balancer, Uniswap). Every state
+                transition — deposit, withdraw, rebalance, vote — is on-chain and auditable on Polygon Amoy.
+              </P>
+              <Grid>
+                <Stat title="Live network" value="Polygon Amoy" sub={`Chain 80002`} />
+                <Stat title="Vault" value="YieldVaultV4" sub="ERC-4626 inspired" />
+                <Stat title="Agent" value="Groq + ethers" sub="Llama 3.3 70B" />
+                <Stat title="Governance" value="OZ Governor" sub="Token-weighted" />
+              </Grid>
+            </Section>
+
+            <Section id="architecture" eyebrow="02" title="Architecture">
+              <P>
+                Six contracts cooperate to deliver autonomous yield. The vault is the only contract user funds
+                interact with — it delegates capital to the strategy manager, which routes to whitelisted protocol
+                adapters under the supervision of the risk guard.
+              </P>
+              <Diagram />
+            </Section>
+
+            <Section id="ai-agent" eyebrow="03" title="The AI agent">
+              <P>
+                The agent runs server-side on every dashboard load. It reads the live snapshot via{" "}
+                <Mono>readProtocolSnapshot()</Mono>, feeds it to Groq&apos;s Llama 3.3 70B model with a structured
+                Zod schema, and returns a typed insight: headline, risk band, confidence, recommended action,
+                allocation, and live signals. There is no hidden state — the LLM only sees on-chain numbers.
+              </P>
+              <CodeBlock
+                language="ts"
+                code={`// app/api/ai/insights/route.ts
+const snapshot = await readProtocolSnapshot()
+const { object } = await generateObject({
+  model: groq("llama-3.3-70b-versatile"),
+  schema: InsightSchema,
+  system: "You are YieldMind's autonomous AI yield agent...",
+  prompt: \`Live snapshot at block \${snapshot.network.blockNumber}...\`,
+})
+return Response.json({ insight: object, snapshot })`}
+              />
+            </Section>
+
+            <Section id="vault" eyebrow="04" title="Vault & shares">
+              <P>
+                <Mono>YieldVaultV4</Mono> issues YLD shares against deposits, tracks <Mono>totalAssets()</Mono> and a
+                public <Mono>yieldRate()</Mono> in basis points. The conversion between assets and shares is
+                deterministic and on-chain.
+              </P>
+              <CodeBlock
+                language="solidity"
+                code={`function deposit(uint256 assets, address receiver) external returns (uint256 shares);
+function withdraw(uint256 shares, address receiver) external returns (uint256 assets);
+function totalAssets() external view returns (uint256);
+function yieldRate()  external view returns (uint256); // basis points`}
+              />
+            </Section>
+
+            <Section id="risk" eyebrow="05" title="Risk guard">
+              <P>
+                <Mono>RiskGuard</Mono> exposes a 0–100 system risk score, an insurance reserve and a
+                <Mono> protectionActive()</Mono> flag. The autonomous executor refuses to deploy capital when the
+                guard returns a score above the configured ceiling.
+              </P>
+              <CodeBlock
+                language="solidity"
+                code={`function getRiskScore() external view returns (uint256); // 0..100
+function insuranceReserve() external view returns (uint256);
+function protectionActive() external view returns (bool);`}
+              />
+            </Section>
+
+            <Section id="governance" eyebrow="06" title="Governance">
+              <P>
+                Voting is OpenZeppelin&apos;s standard <Mono>Governor</Mono> interface, weighted by YLD balance.
+                Proposals progress through Pending → Active → Succeeded → Queued → Executed, all on-chain.
+              </P>
+              <CodeBlock
+                language="solidity"
+                code={`function castVote(uint256 proposalId, uint8 support) external returns (uint256);
+function state(uint256 proposalId) external view returns (uint8);
+function proposalCount() external view returns (uint256);`}
+              />
+            </Section>
+
+            <Section id="contracts" eyebrow="07" title="Deployed contracts (Amoy)">
+              <ul className="grid grid-cols-1 gap-px bg-white/10 md:grid-cols-2">
+                {Object.entries(CONTRACT_ADDRESSES.AMOY).map(([k, v]) => (
+                  <li key={k} className="bg-black/40 p-4">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">{k}</div>
+                    <a
+                      href={`https://amoy.polygonscan.com/address/${v}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 block truncate font-mono text-sm text-white hover:text-white/80"
+                    >
+                      {v} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+
+            <Section id="api" eyebrow="08" title="REST API">
+              <P>
+                The dashboard is built on a small set of public endpoints. They are server-rendered, edge-cached for 5
+                seconds and require no authentication.
+              </P>
+              <ApiRow
+                method="GET"
+                path="/api/onchain/snapshot"
+                desc="Unified protocol snapshot — vault, risk, strategies, oracle, governance, events. Optional ?account=0x… includes wallet position."
+              />
+              <ApiRow
+                method="GET"
+                path="/api/ai/insights"
+                desc="Structured AI insight (headline, risk band, recommendation, allocation, signals)."
+              />
+              <ApiRow
+                method="POST"
+                path="/api/ai/rebalance"
+                desc="Streaming rebalance reasoning. Body: { account?, question? }. Response: text/plain stream."
+              />
+              <ApiRow method="GET" path="/api/governance/proposals" desc="Indexed proposals from the Governor contract." />
+              <ApiRow method="GET" path="/api/forecast" desc="Predicted APY and oracle confidence." />
+            </Section>
+
+            <Section id="integrate" eyebrow="09" title="Integrating with your dApp">
+              <P>
+                The simplest way to read protocol state from another app is the JSON snapshot endpoint. For wallet
+                interactions, point ethers at the deployed addresses with the ABIs in <Mono>lib/contract-abis.ts</Mono>.
+              </P>
+              <CodeBlock
+                language="ts"
+                code={`import { ethers } from "ethers"
+import { CONTRACT_ADDRESSES, YIELD_VAULT_V4_ABI } from "@/lib/contract-abis"
+
+const provider = new ethers.JsonRpcProvider("https://rpc-amoy.polygon.technology")
+const vault = new ethers.Contract(
+  CONTRACT_ADDRESSES.AMOY.YieldVaultV4,
+  YIELD_VAULT_V4_ABI,
+  provider,
+)
+const tvl = await vault.totalAssets()
+const apyBps = await vault.yieldRate()`}
+              />
+              <P>
+                Need help? Open an issue on the GitHub repo or ask the AI agent directly via the dashboard&apos;s live
+                rebalance stream.
+              </P>
+            </Section>
+          </article>
+        </div>
+      </main>
+
+      <SiteFooter />
+    </div>
+  )
+}
+
+/* ----------------------------- primitives ----------------------------- */
+
+function Section({
+  id,
+  eyebrow,
+  title,
+  children,
+}: {
+  id: string
+  eyebrow: string
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <div className="mb-5 flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+        <span>{eyebrow}</span>
+        <span className="h-px w-8 bg-white/20" aria-hidden />
+        <span>Section</span>
       </div>
+      <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">{title}</h2>
+      <div className="mt-6 space-y-5">{children}</div>
+    </section>
+  )
+}
+
+function P({ children }: { children: React.ReactNode }) {
+  return <p className="text-sm leading-relaxed text-white/70 md:text-base">{children}</p>
+}
+
+function Mono({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="border border-white/15 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[12px] text-white">
+      {children}
+    </code>
+  )
+}
+
+function Grid({ children }: { children: React.ReactNode }) {
+  return <div className="grid grid-cols-2 gap-px bg-white/10 md:grid-cols-4">{children}</div>
+}
+
+function Stat({ title, value, sub }: { title: string; value: string; sub?: string }) {
+  return (
+    <div className="bg-black/40 p-4">
+      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">{title}</div>
+      <div className="mt-1 text-base font-semibold text-white">{value}</div>
+      {sub && <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">{sub}</div>}
+    </div>
+  )
+}
+
+function CodeBlock({ language, code }: { language: string; code: string }) {
+  return (
+    <div className="border border-white/10 bg-black">
+      <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">{language}</span>
+        <button
+          type="button"
+          onClick={() => navigator.clipboard?.writeText(code)}
+          className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 hover:text-white"
+        >
+          Copy
+        </button>
+      </div>
+      <pre className="overflow-x-auto p-4 text-[12px] leading-relaxed text-white/90">
+        <code>{code}</code>
+      </pre>
+    </div>
+  )
+}
+
+function ApiRow({ method, path, desc }: { method: string; path: string; desc: string }) {
+  return (
+    <div className="border border-white/10 bg-black/40 p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="border border-white bg-white px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-black">
+          {method}
+        </span>
+        <code className="font-mono text-sm text-white">{path}</code>
+      </div>
+      <p className="mt-2 text-sm text-white/60">{desc}</p>
+    </div>
+  )
+}
+
+function Diagram() {
+  const nodes = [
+    { id: "user", label: "User", row: 0, col: 0 },
+    { id: "vault", label: "YieldVaultV4", row: 0, col: 1 },
+    { id: "manager", label: "StrategyManager", row: 0, col: 2 },
+    { id: "executor", label: "AutonomousExecutor", row: 1, col: 2 },
+    { id: "oracle", label: "AIOracle", row: 1, col: 1 },
+    { id: "risk", label: "RiskGuard", row: 1, col: 0 },
+  ]
+  return (
+    <div className="border border-white/10 bg-black/50 p-6">
+      <div className="grid grid-cols-3 gap-px bg-white/10">
+        {nodes.map((n) => (
+          <div key={n.id} className="flex h-20 items-center justify-center bg-black/60">
+            <div className="text-center">
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Contract</div>
+              <div className="mt-1 text-sm font-semibold text-white">{n.label}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+        Deposits flow user → vault → strategy manager. Oracle + risk guard gate every executor action.
+      </p>
     </div>
   )
 }
