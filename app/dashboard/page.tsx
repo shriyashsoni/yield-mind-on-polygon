@@ -14,6 +14,7 @@ import { StrategyList } from "@/components/dashboard/strategy-list"
 import { UserPortfolio } from "@/components/dashboard/user-portfolio"
 import { OpenSourceCard } from "@/components/dashboard/open-source-card"
 import { WalletGate } from "@/components/dashboard/wallet-gate"
+import { AiReviewButton } from "@/components/dashboard/ai-review-button"
 
 export default function DashboardPage() {
   return (
@@ -57,6 +58,9 @@ export default function DashboardPage() {
             {/* Tier 8: Events */}
             <RecentEvents />
           </div>
+
+          {/* Floating AI Review orb — runs full review on click */}
+          <AiReviewButton />
         </WalletGate>
       </main>
 
