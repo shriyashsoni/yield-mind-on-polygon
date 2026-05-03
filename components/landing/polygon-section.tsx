@@ -1,4 +1,5 @@
 import { SectionLabel } from "./section-label"
+import { PoweredByPolygon } from "./powered-by-polygon"
 
 const SUB_ITEMS = [
   {
@@ -55,12 +56,7 @@ export function PolygonSection() {
                   </li>
                 ))}
               </ul>
-              <div className="inline-flex w-fit items-center gap-3 rounded-full border border-white/15 bg-white/[0.03] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/85">
-                <svg width="10" height="10" viewBox="0 0 12 12" aria-hidden="true">
-                  <path d="M6 1 L11 6 L6 11 L1 6 Z" fill="currentColor" />
-                </svg>
-                Polygon Ecosystem Partner
-              </div>
+              <PoweredByPolygon variant="card" className="w-fit" />
             </div>
 
             {/* Orbit diagram */}

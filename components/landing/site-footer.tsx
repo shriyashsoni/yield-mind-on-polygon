@@ -1,40 +1,41 @@
 import Link from "next/link"
+import { PoweredByPolygon } from "./powered-by-polygon"
 
 const COLUMNS = [
   {
     title: "Product",
     links: [
       { label: "Dashboard", href: "/dashboard" },
-      { label: "Strategies", href: "/strategies" },
-      { label: "Analytics", href: "/analytics" },
       { label: "Governance", href: "/governance" },
+      { label: "Whitepaper", href: "/whitepaper" },
+      { label: "Documentation", href: "/docs" },
     ],
   },
   {
-    title: "Resources",
+    title: "Protocol",
     links: [
-      { label: "Documentation", href: "/docs" },
-      { label: "Whitepaper", href: "/whitepaper" },
-      { label: "Contracts", href: "/contracts" },
-      { label: "About", href: "/about" },
+      { label: "YieldVault V4", href: "/docs/vault" },
+      { label: "AI Agent", href: "/docs/ai-agent" },
+      { label: "RiskGuard", href: "/docs/risk-guard" },
+      { label: "Contract Addresses", href: "/docs/contracts" },
+    ],
+  },
+  {
+    title: "Developers",
+    links: [
+      { label: "Quickstart", href: "/docs/quickstart" },
+      { label: "Architecture", href: "/docs/architecture" },
+      { label: "API Reference", href: "/docs/api-reference" },
+      { label: "Integrate", href: "/docs/integrate" },
     ],
   },
   {
     title: "Community",
     links: [
-      { label: "Twitter", href: "https://twitter.com" },
-      { label: "Discord", href: "https://discord.com" },
-      { label: "GitHub", href: "https://github.com" },
+      { label: "GitHub", href: "https://github.com/shriyashsoni/yelid-mind-smart-contract" },
       { label: "Polygon", href: "https://polygon.technology" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Terms of Service", href: "/docs#terms" },
-      { label: "Privacy Policy", href: "/docs#privacy" },
-      { label: "Risk Disclosure", href: "/docs#risk" },
-      { label: "Governance", href: "/governance" },
+      { label: "Polygonscan", href: "https://amoy.polygonscan.com" },
+      { label: "Polygon Amoy Faucet", href: "https://faucet.polygon.technology" },
     ],
   },
 ]
@@ -80,9 +81,7 @@ export function SiteFooter() {
 
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-8 md:flex-row md:items-center">
           <p className="text-xs text-white/40">© 2025 YieldMind. All rights reserved.</p>
-          <p className="text-xs uppercase tracking-[0.24em] text-white/40">
-            Powered by Polygon
-          </p>
+          <PoweredByPolygon variant="pill" />
         </div>
       </div>
     </footer>

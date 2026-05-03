@@ -12,6 +12,7 @@ import { OraclePanel } from "@/components/dashboard/oracle-panel"
 import { RecentEvents } from "@/components/dashboard/recent-events"
 import { StrategyList } from "@/components/dashboard/strategy-list"
 import { UserPortfolio } from "@/components/dashboard/user-portfolio"
+import { ContractsHub } from "@/components/dashboard/contracts-hub"
 
 export default function DashboardPage() {
   return (
@@ -48,7 +49,10 @@ export default function DashboardPage() {
           {/* Tier 6: Strategy list */}
           <StrategyList />
 
-          {/* Tier 7: Events */}
+          {/* Tier 7: Smart-contract control center (all 11 contracts) */}
+          <ContractsHub />
+
+          {/* Tier 8: Events */}
           <RecentEvents />
         </div>
       </main>
