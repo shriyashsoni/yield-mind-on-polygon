@@ -1,41 +1,46 @@
 import { NextResponse } from "next/server"
+import { readRisk, readVault, readForecast } from "@/lib/onchain-reader"
+import { CONTRACT_ADDRESSES } from "@/lib/contract-abis"
+
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const address = searchParams.get("address")
+  try {
+    const { searchParams } = new URL(request.url)
+    const address = searchParams.get("address") || null
+    const [risk, vault, forecast] = await Promise.all([
+      readRisk(),
+      readVault(),
+      readForecast(),
+    ])
 
-  // Simulated risk scoring data for Wave 3
-  const riskAnalysis = {
-    address: address || "0x...",
-    timestamp: new Date().toISOString(),
-    overallRiskScore: 32, // 0-100 scale
-    riskLevel: "LOW", // LOW, MEDIUM, HIGH, CRITICAL
-    breakdown: {
-      protocolRisk: 28,
-      marketRisk: 35,
-      liquidityRisk: 22,
-      smartContractRisk: 15,
-      concentrationRisk: 40,
-    },
-    protocolScores: [
-      { name: "Balancer V2", score: 25, tvl: "$5.2M", audited: true },
-      { name: "Aave V3", score: 18, tvl: "$12.8M", audited: true },
-      { name: "QuickSwap", score: 32, tvl: "$3.1M", audited: true },
-      { name: "Curve Finance", score: 20, tvl: "$8.5M", audited: true },
-    ],
-    alerts: [
-      {
-        severity: "INFO",
-        message: "Portfolio diversification is optimal",
-        timestamp: new Date().toISOString(),
-      },
-    ],
-    recommendations: [
-      "Maintain current allocation strategy",
-      "Monitor Balancer pool liquidity depth",
-      "Consider rebalancing if market volatility exceeds 15%",
-    ],
+    const riskLevel: "LOW" | "MODERATE" | "ELEVATED" | "HIGH" =
+      risk.riskScore < 25
+        ? "LOW"
+        : risk.riskScore < 50
+          ? "MODERATE"
+          : risk.riskScore < 75
+            ? "ELEVATED"
+            : "HIGH"
+
+    return NextResponse.json({
+      ok: true,
+      address,
+      riskGuard: CONTRACT_ADDRESSES.AMOY.RiskGuard,
+      insuranceReserve: CONTRACT_ADDRESSES.AMOY.InsuranceReserve,
+      overallRiskScore: risk.riskScore,
+      riskLevel,
+      protectionActive: risk.protectionActive,
+      reserveRatioPct: risk.reserveRatioPct,
+      insuranceReserveBalance: risk.insuranceReserve,
+      vaultApy: vault.yieldRateApy,
+      forecastApy: forecast.predictedAPY,
+      forecastConfidence: forecast.confidence,
+      block: vault.blockNumber,
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "rpc_error"
+    return NextResponse.json({ ok: false, error: message }, { status: 500 })
   }
-
-  return NextResponse.json(riskAnalysis)
 }
