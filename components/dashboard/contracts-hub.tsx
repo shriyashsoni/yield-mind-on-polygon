@@ -110,17 +110,39 @@ export function ContractsHub() {
         </aside>
 
         <div className="flex flex-col gap-8">
-          <VaultPanel />
-          <TokenPanel />
-          <StakingPanel />
-          <AiOraclePanel />
-          <RiskGuardPanel />
-          <StrategyManagerPanel />
-          <InsurancePanel />
-          <ExecutorPanel />
-          <RewardsPanel />
-          <EmergencyPanel />
-          <GovernancePanel />
+          <section id="vault" className="scroll-mt-28">
+            <VaultPanel />
+          </section>
+          <section id="token" className="scroll-mt-28">
+            <TokenPanel />
+          </section>
+          <section id="staking" className="scroll-mt-28">
+            <StakingPanel />
+          </section>
+          <section id="ai-oracle" className="scroll-mt-28">
+            <AiOraclePanel />
+          </section>
+          <section id="risk-guard" className="scroll-mt-28">
+            <RiskGuardPanel />
+          </section>
+          <section id="strategies" className="scroll-mt-28">
+            <StrategyManagerPanel />
+          </section>
+          <section id="insurance" className="scroll-mt-28">
+            <InsurancePanel />
+          </section>
+          <section id="executor" className="scroll-mt-28">
+            <ExecutorPanel />
+          </section>
+          <section id="rewards" className="scroll-mt-28">
+            <RewardsPanel />
+          </section>
+          <section id="emergency" className="scroll-mt-28">
+            <EmergencyPanel />
+          </section>
+          <section id="governance" className="scroll-mt-28">
+            <GovernancePanel />
+          </section>
         </div>
       </div>
     </section>
