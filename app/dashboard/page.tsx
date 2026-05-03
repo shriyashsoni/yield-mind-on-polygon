@@ -11,7 +11,7 @@ import { RiskFeed } from "@/components/dashboard/risk-feed"
 import { OraclePanel } from "@/components/dashboard/oracle-panel"
 import { RecentEvents } from "@/components/dashboard/recent-events"
 import { StrategyList } from "@/components/dashboard/strategy-list"
-import { UserPortfolio } from "@/components/dashboard/user-portfolio"
+import { InvestPanel } from "@/components/dashboard/invest-panel"
 import { OpenSourceCard } from "@/components/dashboard/open-source-card"
 import { WalletGate } from "@/components/dashboard/wallet-gate"
 import { AiReviewButton } from "@/components/dashboard/ai-review-button"
@@ -32,8 +32,8 @@ export default function DashboardPage() {
             {/* Tier 2: AI insight (Groq) — full width */}
             <AiInsightPanel />
 
-            {/* Tier 3: Wallet position */}
-            <UserPortfolio />
+            {/* Tier 3: Centerpiece — interactive invest/withdraw/stake/claim/rebalance */}
+            <InvestPanel />
 
             {/* Tier 4: Allocation + Risk + Oracle */}
             <div className="grid gap-6 lg:grid-cols-3">
