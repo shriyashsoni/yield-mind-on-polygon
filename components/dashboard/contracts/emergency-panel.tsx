@@ -11,7 +11,10 @@ type Snapshot = {
 }
 
 export function EmergencyPanel() {
-  const address = CONTRACT_ADDRESSES.AMOY.EmergencyControl as `0x${string}`
+  // EmergencyControl logic lives in RiskGuard in the Wave 6 deployment
+  // (it owns the pause + circuit breaker switches), so we point this read-only
+  // status panel at the deployed RiskGuard address.
+  const address = CONTRACT_ADDRESSES.AMOY.RiskGuard as `0x${string}`
   const { data } = useSWR<Snapshot>("/api/onchain/snapshot", fetcher, { refreshInterval: 10000 })
   const e = data?.emergency
   const paused = !!e?.paused || !!data?.risk?.paused

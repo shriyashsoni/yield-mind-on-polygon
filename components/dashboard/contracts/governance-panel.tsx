@@ -23,7 +23,7 @@ type Proposal = {
 type Resp = { ok: boolean; proposals: Proposal[]; total: number }
 
 export function GovernancePanel() {
-  const address = CONTRACT_ADDRESSES.AMOY.Governance as `0x${string}`
+  const address = CONTRACT_ADDRESSES.AMOY.YieldMindGovernor as `0x${string}`
   const { signer, address: account } = useWeb3()
   const { state, exec, reset } = useContractAction()
   const { data } = useSWR<Resp>("/api/governance/proposals", fetcher, { refreshInterval: 30000 })
