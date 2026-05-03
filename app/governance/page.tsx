@@ -55,13 +55,12 @@ export default function GovernancePage() {
               <span>YieldMind Governor</span>
               <span aria-hidden>·</span>
               <a
-                href={`https://amoy.polygonscan.com/address/${CONTRACT_ADDRESSES.AMOY.YieldMindGovernor}`}
+                href="https://github.com/shriyashsoni/yelid-mind-smart-contract"
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono hover:text-white"
+                className="hover:text-white"
               >
-                {CONTRACT_ADDRESSES.AMOY.YieldMindGovernor.slice(0, 8)}…
-                {CONTRACT_ADDRESSES.AMOY.YieldMindGovernor.slice(-6)} ↗
+                Source on GitHub ↗
               </a>
             </div>
 
@@ -131,11 +130,46 @@ export default function GovernancePage() {
             )}
           </Panel>
 
-          <Panel eyebrow="Contracts" title="Governance addresses">
-            <div className="grid grid-cols-1 gap-px bg-white/10 md:grid-cols-3">
-              <Addr label="Governor" value={CONTRACT_ADDRESSES.AMOY.YieldMindGovernor} />
-              <Addr label="Timelock" value={CONTRACT_ADDRESSES.AMOY.TimelockController} />
-              <Addr label="YLD Token" value={CONTRACT_ADDRESSES.AMOY.YLDToken} />
+          <Panel eyebrow="Open source" title="Verify the Governor">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <a
+                href="https://github.com/shriyashsoni/yelid-mind-smart-contract"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-start justify-between gap-4 border border-white/12 bg-white/[0.02] p-5 transition-colors hover:border-white/30 hover:bg-white/[0.05]"
+              >
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                    Source
+                  </div>
+                  <div className="mt-1 text-sm font-medium text-white">View Governor & Timelock on GitHub</div>
+                  <div className="mt-1 text-xs text-white/55">
+                    Solidity sources, audits, and the deployment manifest.
+                  </div>
+                </div>
+                <span aria-hidden className="font-mono text-base text-white/40 transition-colors group-hover:text-white">
+                  ↗
+                </span>
+              </a>
+              <a
+                href="https://amoy.polygonscan.com"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-start justify-between gap-4 border border-white/12 bg-white/[0.02] p-5 transition-colors hover:border-white/30 hover:bg-white/[0.05]"
+              >
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                    Verify
+                  </div>
+                  <div className="mt-1 text-sm font-medium text-white">Polygonscan (Amoy)</div>
+                  <div className="mt-1 text-xs text-white/55">
+                    Independently verify storage, votes, and event history.
+                  </div>
+                </div>
+                <span aria-hidden className="font-mono text-base text-white/40 transition-colors group-hover:text-white">
+                  ↗
+                </span>
+              </a>
             </div>
           </Panel>
         </div>
@@ -242,7 +276,7 @@ function ProposalRow({
           {busy === "against" ? "Submitting…" : "Vote Against"}
         </button>
         <a
-          href={`https://amoy.polygonscan.com/address/${CONTRACT_ADDRESSES.AMOY.YieldMindGovernor}`}
+          href="https://amoy.polygonscan.com"
           target="_blank"
           rel="noreferrer"
           className="ml-auto self-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-white"
@@ -272,17 +306,4 @@ function Bar({ label, pct, value, dim }: { label: string; pct: number; value: st
   )
 }
 
-function Addr({ label, value }: { label: string; value: string }) {
-  return (
-    <a
-      href={`https://amoy.polygonscan.com/address/${value}`}
-      target="_blank"
-      rel="noreferrer"
-      className="block bg-black/40 p-4 transition-colors hover:bg-white/[0.04]"
-    >
-      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">{label}</div>
-      <div className="mt-2 truncate font-mono text-sm text-white">{value}</div>
-      <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">View on Polygonscan ↗</div>
-    </a>
-  )
-}
+
