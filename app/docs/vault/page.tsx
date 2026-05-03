@@ -10,7 +10,7 @@ export default function Page() {
     <DocPageShell page={page}>
       <H2 id="interface">Interface</H2>
       <P>
-        <Mono>YieldVaultV4</Mono> issues YLD shares against deposits, tracks <Mono>totalAssets()</Mono> and a
+        <Mono>YieldVaultV4</Mono> issues ymMATIC shares against MATIC deposits, tracks <Mono>totalAssets()</Mono> and a
         public <Mono>yieldRate()</Mono> in basis points. Conversions are deterministic and on-chain.
       </P>
       <CodeBlock

@@ -16,7 +16,7 @@ type Tab = "deposit" | "withdraw" | "stake" | "claim"
 const TABS: { id: Tab; label: string; icon: typeof ArrowDownToLine }[] = [
   { id: "deposit", label: "Deposit", icon: ArrowDownToLine },
   { id: "withdraw", label: "Withdraw", icon: ArrowUpFromLine },
-  { id: "stake", label: "Stake YLD", icon: Coins },
+  { id: "stake", label: "Stake MATIC", icon: Coins },
   { id: "claim", label: "Claim", icon: Gift },
 ]
 
@@ -65,16 +65,16 @@ export function InvestPanel() {
   const preview = useMemo(() => {
     if (tab === "deposit") {
       const shares = sharePrice > 0 ? amt / sharePrice : 0
-      return { primary: `${fmtNum(shares, 4)} ${vault.assetSymbol ?? "ymUSDC"}`, label: "You receive (shares)" }
+      return { primary: `${fmtNum(shares, 4)} ymMATIC`, label: "You receive (shares)" }
     }
     if (tab === "withdraw") {
-      const usd = amt * sharePrice
-      return { primary: `$${fmtNum(usd, 2)}`, label: "You receive (USD value)" }
+      const matic = amt * sharePrice
+      return { primary: `${fmtNum(matic, 4)} MATIC`, label: "You receive" }
     }
     if (tab === "stake") {
-      return { primary: `${fmtNum(amt, 4)} YLD staked`, label: "Earning rewards immediately" }
+      return { primary: `${fmtNum(amt, 4)} MATIC staked`, label: "Earning rewards immediately" }
     }
-    return { primary: `${fmtNum(pendingRewards, 6)} YLD`, label: "Rewards available to claim" }
+    return { primary: `${fmtNum(pendingRewards, 6)} MATIC`, label: "Rewards available to claim" }
   }, [tab, amt, sharePrice, vault.assetSymbol, pendingRewards])
 
   const submit = () => {
@@ -94,8 +94,8 @@ export function InvestPanel() {
     if (isBusy) return "Pending…"
     if (tab === "deposit") return "Deposit & earn"
     if (tab === "withdraw") return "Withdraw assets"
-    if (tab === "stake") return "Stake YLD"
-    return pendingRewards > 0 ? `Claim ${fmtNum(pendingRewards, 6)} YLD` : "No rewards yet"
+    if (tab === "stake") return "Stake MATIC"
+    return pendingRewards > 0 ? `Claim ${fmtNum(pendingRewards, 6)} MATIC` : "No rewards yet"
   })()
 
   const submitDisabled =
@@ -160,8 +160,7 @@ export function InvestPanel() {
                     onClick={() => setAmount(max > 0 ? String(max) : "")}
                     className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/55 hover:text-white"
                   >
-                    Max · {fmtNum(max, 4)}{" "}
-                    {tab === "stake" ? "YLD" : tab === "withdraw" ? vault.assetSymbol : vault.assetSymbol}
+                    Max · {fmtNum(max, 4)} MATIC
                   </button>
                 </div>
                 <div className="mt-2 flex items-center gap-3 border border-white/15 bg-black/60 px-4 py-3 focus-within:border-white">
@@ -178,7 +177,7 @@ export function InvestPanel() {
                     className="w-full bg-transparent text-2xl font-semibold tabular-nums text-white outline-none placeholder:text-white/25 disabled:cursor-not-allowed"
                   />
                   <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/45">
-                    {tab === "stake" ? "YLD" : vault.assetSymbol}
+                    MATIC
                   </span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1">
@@ -199,7 +198,7 @@ export function InvestPanel() {
               <div className="border border-white/15 bg-black/60 p-4">
                 <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">Pending rewards</div>
                 <div className="mt-1 text-3xl font-semibold tabular-nums text-white">
-                  {fmtNum(pendingRewards, 6)} <span className="text-white/45 text-base">YLD</span>
+                  {fmtNum(pendingRewards, 6)} <span className="text-white/45 text-base">MATIC</span>
                 </div>
                 <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
                   Streamed continuously · claim anytime
@@ -252,12 +251,12 @@ export function InvestPanel() {
             <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/45">Your position</div>
 
             <div className="mt-4 grid grid-cols-2 gap-4">
-              <PositionTile label={`${vault.assetSymbol ?? "Asset"} wallet`} value={fmtNum(walletAsset, 2)} />
-              <PositionTile label="Vault shares" value={fmtNum(userShares, 4)} />
-              <PositionTile label="Position value" value={`$${fmtNum(positionValue, 2)}`} highlight />
-              <PositionTile label="Staked YLD" value={fmtNum(stakedYld, 2)} />
-              <PositionTile label="Pending rewards" value={fmtNum(pendingRewards, 6)} sub="YLD" />
-              <PositionTile label="Wallet YLD" value={fmtNum(walletYld, 2)} />
+              <PositionTile label="MATIC wallet" value={fmtNum(walletAsset, 2)} sub="MATIC" />
+              <PositionTile label="Vault shares" value={fmtNum(userShares, 4)} sub="ymMATIC" />
+              <PositionTile label="Position value" value={`${fmtNum(positionValue, 2)} MATIC`} highlight />
+              <PositionTile label="Staked" value={fmtNum(stakedYld, 2)} sub="MATIC" />
+              <PositionTile label="Pending rewards" value={fmtNum(pendingRewards, 6)} sub="MATIC" />
+              <PositionTile label="Reward wallet" value={fmtNum(walletYld, 2)} sub="MATIC" />
             </div>
           </div>
 

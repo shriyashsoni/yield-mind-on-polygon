@@ -33,7 +33,7 @@ export default function Page() {
           manager unwinds positions in deepest-liquidity order.
         </li>
         <li>
-          <strong className="text-white">Govern</strong> — YLD-weighted votes through OpenZeppelin
+          <strong className="text-white">Govern</strong> — MATIC-stake-weighted votes through OpenZeppelin
           <code> Governor</code>. Pause keys live behind <code>EmergencyControl</code>.
         </li>
       </Ul>

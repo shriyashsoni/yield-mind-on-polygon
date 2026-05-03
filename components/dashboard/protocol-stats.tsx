@@ -26,13 +26,13 @@ export function ProtocolStats() {
       <StatTile
         label="Total Value Locked"
         value={isLoading ? "—" : fmtUsd(tvl, 0)}
-        sub={data?.protocol?.assetSymbol ? `Denominated in ${data.protocol.assetSymbol}` : "Polygon Amoy"}
+        sub="Denominated in MATIC · Polygon"
         trend="up"
       />
       <StatTile
         label="Share Price"
-        value={isLoading ? "—" : `$${sharePrice.toFixed(4)}`}
-        sub={`Total shares: ${fmtNum(totalShares, 2)}`}
+        value={isLoading ? "—" : `${sharePrice.toFixed(4)} MATIC`}
+        sub={`Total shares: ${fmtNum(totalShares, 2)} ymMATIC`}
       />
       <StatTile
         label="Estimated APY"

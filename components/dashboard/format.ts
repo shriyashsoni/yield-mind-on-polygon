@@ -1,16 +1,19 @@
-export const fmtUsd = (n: number, max = 2) =>
+// All on-chain values in YieldMind are denominated in MATIC (Polygon's native
+// asset). The legacy `fmtUsd` name is preserved so existing call-sites keep
+// working — it now formats as a MATIC amount rather than a USD amount.
+
+const formatAmount = (n: number, max: number) =>
   new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: max,
   }).format(Number.isFinite(n) ? n : 0)
 
-export const fmtNum = (n: number, max = 2) =>
-  new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: max,
-  }).format(Number.isFinite(n) ? n : 0)
+export const fmtMatic = (n: number, max = 2) => `${formatAmount(n, max)} MATIC`
+
+// Backwards-compatible alias used widely across the dashboard. Renders MATIC.
+export const fmtUsd = fmtMatic
+
+export const fmtNum = (n: number, max = 2) => formatAmount(n, max)
 
 export const fmtPct = (n: number, max = 2) =>
   `${(Number.isFinite(n) ? n : 0).toLocaleString("en-US", {

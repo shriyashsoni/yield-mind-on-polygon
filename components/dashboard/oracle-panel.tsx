@@ -33,7 +33,7 @@ export function OraclePanel() {
                 </span>
               </div>
               <div className="mt-2 text-xl font-semibold tabular-nums text-white">
-                ${f.price?.toLocaleString("en-US", { maximumFractionDigits: 4 })}
+                {f.price?.toLocaleString("en-US", { maximumFractionDigits: 4 })}
               </div>
               <div className="mt-1 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em]">
                 <span className={f.change24h >= 0 ? "text-white" : "text-white/40"}>
