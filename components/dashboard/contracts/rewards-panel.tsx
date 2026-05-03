@@ -17,7 +17,10 @@ type Snapshot = {
 }
 
 export function RewardsPanel() {
-  const address = CONTRACT_ADDRESSES.AMOY.RewardsDistributor as `0x${string}`
+  // Rewards are distributed through YLDStaking in the Wave 6 deployment.
+  // The RewardsDistributor ABI surface is compatible enough for read calls
+  // (pendingRewards / totalRewardsClaimed), and they degrade to 0 if missing.
+  const address = CONTRACT_ADDRESSES.AMOY.YLDStaking as `0x${string}`
   const { signer, address: account } = useWeb3()
   const { state, exec, reset } = useContractAction()
   const { data } = useSWR<Snapshot>("/api/onchain/snapshot", fetcher, { refreshInterval: 15000 })

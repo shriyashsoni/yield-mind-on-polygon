@@ -1,6 +1,10 @@
 // YieldMind Wave 6 Deployment Configuration
 // Smart Contract Deployment and Integration Guide
 
+// Re-export CONTRACT_ADDRESSES so legacy imports from "@/lib/deployment-config"
+// resolve to the same object exported by "@/lib/contract-abis".
+export { CONTRACT_ADDRESSES } from "./contract-abis"
+
 export const DEPLOYMENT_CONFIG = {
   network: {
     name: 'Polygon Amoy',
