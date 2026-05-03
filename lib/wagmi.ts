@@ -5,16 +5,32 @@ import { polygon, polygonAmoy } from "wagmi/chains"
 import { injected, walletConnect } from "@wagmi/connectors"
 
 const projectId =
-  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ??
-  // Fallback Reown demo projectId — works for development but should be replaced
-  // in production via the env var. Avoids "missing projectId" build errors.
-  "00000000000000000000000000000000"
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? ""
 
-// Build connector list. The WalletConnect connector is only added when a real
-// projectId is configured so we don't surface a non-functional QR option.
+// Use the actual runtime origin so it matches the domain you registered
+// in your Reown / WalletConnect Cloud allowlist. Falls back to a sane
+// default during SSR / build.
+const appOrigin =
+  typeof window !== "undefined" ? window.location.origin : "https://yieldmind.app"
+
+const isWcConfigured =
+  projectId.length > 0 &&
+  projectId !== "00000000000000000000000000000000" &&
+  projectId !== "your-walletconnect-project-id"
+
+if (typeof window !== "undefined") {
+  // Helps you confirm in the browser console whether the WalletConnect
+  // connector was actually wired up at runtime.
+  console.log("[v0] wagmi config", {
+    walletConnectEnabled: isWcConfigured,
+    projectIdPresent: projectId.length > 0,
+    origin: appOrigin,
+  })
+}
+
 const connectors = [
   injected({ shimDisconnect: true }),
-  ...(projectId && projectId !== "00000000000000000000000000000000"
+  ...(isWcConfigured
     ? [
         walletConnect({
           projectId,
@@ -22,8 +38,8 @@ const connectors = [
           metadata: {
             name: "YieldMind",
             description: "AI-driven DeFi yield optimization on Polygon",
-            url: "https://yieldmind.xyz",
-            icons: ["/logos/polygon.png"],
+            url: appOrigin,
+            icons: [`${appOrigin}/logos/polygon.png`],
           },
         }),
       ]
@@ -42,6 +58,7 @@ export const wagmiConfig = createConfig({
 
 export const SUPPORTED_CHAIN_IDS = [polygon.id, polygonAmoy.id] as const
 export const DEFAULT_CHAIN_ID = polygonAmoy.id
+export const WALLETCONNECT_ENABLED = isWcConfigured
 
 declare module "wagmi" {
   interface Register {
