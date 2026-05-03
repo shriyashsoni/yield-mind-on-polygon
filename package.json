@@ -9,6 +9,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^3.0.38",
+    "@ai-sdk/react": "^3.0.176",
     "@radix-ui/react-checkbox": "latest",
     "@radix-ui/react-dialog": "latest",
     "@radix-ui/react-dropdown-menu": "latest",
@@ -21,6 +23,7 @@
     "@rainbow-me/rainbowkit": "2.2.9",
     "@tanstack/react-query": "latest",
     "@vercel/analytics": "latest",
+    "ai": "^6.0.174",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "latest",
@@ -33,10 +36,12 @@
     "react-dom": "^19",
     "recharts": "latest",
     "sonner": "latest",
+    "swr": "^2.4.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "viem": "2.38.2",
-    "wagmi": "2.18.0"
+    "wagmi": "2.18.0",
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",

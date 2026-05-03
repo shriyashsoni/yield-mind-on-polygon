@@ -1,6 +1,6 @@
 import type React from "react"
-import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Inter, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Providers } from "./providers"
@@ -8,20 +8,30 @@ import { Toaster } from "sonner"
 import { Suspense } from "react"
 import { TermsModal } from "@/components/terms-modal"
 
-const geistSans = Geist({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
 })
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "YieldMind - AI-Powered DeFi Portfolio Optimizer",
-  description: "Optimize your DeFi yields with AI-powered portfolio management on Polygon",
+  title: "YieldMind — AI-Powered DeFi Portfolio Optimizer on Polygon zkEVM",
+  description:
+    "YieldMind automatically optimizes your portfolio across Polygon protocols using machine learning. Higher returns. Lower risk. Fully transparent.",
   generator: "v0.app",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({
@@ -30,8 +40,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
+    <html lang="en" className={`dark bg-background ${inter.variable} ${geistMono.variable}`}>
+      <body className="bg-background text-foreground font-sans antialiased">
         <Suspense fallback={null}>
           <Providers>
             <TermsModal />

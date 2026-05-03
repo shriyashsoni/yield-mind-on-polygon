@@ -2,7 +2,6 @@ import { useWeb3 } from "@/lib/web3-context"
 import { useQuery } from "@tanstack/react-query"
 import { ethers } from "ethers"
 import { CONTRACTS, VAULT_ABI, ERC20_ABI, isDeployedAddress } from "@/lib/contracts"
-import { DEMO_VAULT_DATA } from "@/lib/demo-data"
 
 export function useVaultData() {
   const { address, chainId, provider } = useWeb3()
@@ -52,21 +51,39 @@ export function useVaultData() {
     refetchInterval: 10000,
   })
 
-  const useDemoData = !data || data.totalAssets === 0n
-  const decimals = useDemoData ? 6 : data.assetDecimals
+  // Real on-chain data only. When no contract data is available we
+  // return zeros so the UI clearly signals an empty/uninitialised state
+  // rather than rendering invented numbers.
+  if (!data) {
+    return {
+      totalValueLocked: "0",
+      userBalance: "0",
+      userShares: "0",
+      currentAPY: 0,
+      usdcBalance: "0",
+      assetAddress: defaultAssetAddress,
+      assetSymbol: "YLD",
+      assetDecimals: 18,
+      isLoading,
+      vaultAddress,
+      usdcAddress: CONTRACTS[networkKey].usdc,
+      isDemoMode: false,
+    }
+  }
 
+  const decimals = data.assetDecimals
   return {
-    totalValueLocked: useDemoData ? DEMO_VAULT_DATA.totalValueLocked : ethers.formatUnits(data.totalAssets, decimals),
-    userBalance: useDemoData ? DEMO_VAULT_DATA.userBalance : ethers.formatUnits(data.userBalance, decimals),
-    userShares: useDemoData ? DEMO_VAULT_DATA.userShares : ethers.formatUnits(data.userShares, 18),
-    currentAPY: DEMO_VAULT_DATA.currentAPY,
-    usdcBalance: useDemoData ? DEMO_VAULT_DATA.usdcBalance : ethers.formatUnits(data.assetBalance, decimals),
-    assetAddress: useDemoData ? defaultAssetAddress : data.assetAddress,
-    assetSymbol: useDemoData ? "TOKEN" : data.assetSymbol,
+    totalValueLocked: ethers.formatUnits(data.totalAssets, decimals),
+    userBalance: ethers.formatUnits(data.userBalance, decimals),
+    userShares: ethers.formatUnits(data.userShares, 18),
+    currentAPY: 0,
+    usdcBalance: ethers.formatUnits(data.assetBalance, decimals),
+    assetAddress: data.assetAddress,
+    assetSymbol: data.assetSymbol,
     assetDecimals: decimals,
     isLoading,
     vaultAddress,
-    usdcAddress: useDemoData ? CONTRACTS[networkKey].usdc : data.assetAddress,
-    isDemoMode: useDemoData,
+    usdcAddress: data.assetAddress,
+    isDemoMode: false,
   }
 }

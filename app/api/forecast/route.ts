@@ -1,37 +1,54 @@
 import { NextResponse } from "next/server"
+import { readForecast, readVault, readRisk } from "@/lib/onchain-reader"
+import { CONTRACT_ADDRESSES } from "@/lib/contract-abis"
 
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+
+/**
+ * 7-day forward path derived from on-chain AIOracle.getLatestForecast()
+ * and current vault state. Confidence/risk degrade over horizon as a
+ * monotonically dampened series so the UI can render a real chart.
+ */
 export async function GET() {
-  // Simulated 7-day yield forecast data for Wave 3
-  const forecast = {
-    timeframe: "7d",
-    generated: new Date().toISOString(),
-    modelVersion: "v3.0-TFT",
-    confidence: 89,
-    predictions: [
-      { date: "2025-01-26", apy: 18.4, confidence: 92, riskScore: 28 },
-      { date: "2025-01-27", apy: 18.9, confidence: 90, riskScore: 29 },
-      { date: "2025-01-28", apy: 19.2, confidence: 88, riskScore: 31 },
-      { date: "2025-01-29", apy: 19.5, confidence: 86, riskScore: 32 },
-      { date: "2025-01-30", apy: 20.1, confidence: 84, riskScore: 35 },
-      { date: "2025-01-31", apy: 20.4, confidence: 82, riskScore: 36 },
-      { date: "2025-02-01", apy: 20.7, confidence: 80, riskScore: 38 },
-    ],
-    recommendation: {
-      action: "REBALANCE",
-      reasoning: [
-        "Forecasted APY increase of 2.3% over next 7 days",
-        "Risk score remains within acceptable range (<40)",
-        "Market volatility decreasing, optimal for reallocation",
-        "Liquidity depth improving across target protocols",
-      ],
-      targetAllocations: [
-        { protocol: "Balancer", current: 40, target: 45, change: +5 },
-        { protocol: "Aave", current: 30, target: 28, change: -2 },
-        { protocol: "QuickSwap", current: 20, target: 20, change: 0 },
-        { protocol: "Curve", current: 10, target: 7, change: -3 },
-      ],
-    },
-  }
+  try {
+    const [forecast, vault, risk] = await Promise.all([
+      readForecast(),
+      readVault(),
+      readRisk(),
+    ])
 
-  return NextResponse.json(forecast)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const start = vault.yieldRateApy || 0
+    const end = forecast.predictedAPY || start
+    const points = 7
+
+    const predictions = Array.from({ length: points }, (_, i) => {
+      const t = (i + 1) / points
+      const apy = start + (end - start) * t
+      const date = new Date(today.getTime() + (i + 1) * 86_400_000)
+      return {
+        date: date.toISOString().slice(0, 10),
+        apy: Math.max(0, +apy.toFixed(3)),
+        confidence: Math.max(0, +Math.min(100, forecast.confidence - i * 1.2).toFixed(1)),
+        riskScore: Math.max(0, Math.min(100, Math.round(risk.riskScore + i * 0.6))),
+      }
+    })
+
+    return NextResponse.json({
+      ok: true,
+      timeframe: "7d",
+      generated: new Date().toISOString(),
+      oracle: CONTRACT_ADDRESSES.AMOY.AIOracle,
+      currentApy: vault.yieldRateApy,
+      predictedApy: forecast.predictedAPY,
+      confidence: forecast.confidence,
+      currentRisk: risk.riskScore,
+      predictions,
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "rpc_error"
+    return NextResponse.json({ ok: false, error: message }, { status: 500 })
+  }
 }

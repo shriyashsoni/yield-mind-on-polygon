@@ -1,84 +1,82 @@
 @import "tailwindcss";
-/* Removed tw-animate-css import that was causing CSS parsing error */
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated theme for DeFi platform with purple accent and dark base */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* YieldMind monochrome design system: pure black & white only */
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #ffffff;
+  --muted: #111111;
+  --muted-foreground: rgba(255, 255, 255, 0.55);
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --destructive: #ffffff;
+  --destructive-foreground: #000000;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: rgba(255, 255, 255, 0.4);
+
+  /* YieldMind extended tokens */
+  --surface-1: #0a0a0a;
+  --surface-2: #111111;
+  --surface-3: #1a1a1a;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  --text-muted: rgba(255, 255, 255, 0.3);
+
+  --chart-1: #ffffff;
+  --chart-2: rgba(255, 255, 255, 0.7);
+  --chart-3: rgba(255, 255, 255, 0.5);
+  --chart-4: rgba(255, 255, 255, 0.3);
+  --chart-5: rgba(255, 255, 255, 0.15);
+
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: rgba(255, 255, 255, 0.4);
 }
 
 .dark {
-  /* Dark mode optimized for data visualization */
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #ffffff;
+  --muted: #111111;
+  --muted-foreground: rgba(255, 255, 255, 0.55);
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --destructive: #ffffff;
+  --destructive-foreground: #000000;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: rgba(255, 255, 255, 0.4);
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -117,29 +115,229 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Added inline RainbowKit styles to replace external CSS import */
-/* RainbowKit Modal Styles */
 [data-rk] {
   --rk-fonts-body: var(--font-sans);
   --rk-radii-modal: var(--radius);
   --rk-radii-actionButton: var(--radius);
-  --rk-radii-connectButton: var(--radius);
+  --rk-radii-connectButton: 9999px;
   --rk-radii-menuButton: var(--radius);
-  --rk-colors-accentColor: #8b5cf6;
-  --rk-colors-accentColorForeground: white;
-  --rk-colors-modalBackground: oklch(0.145 0 0);
-  --rk-colors-modalBorder: oklch(0.269 0 0);
-  --rk-colors-modalText: oklch(0.985 0 0);
-  --rk-colors-modalTextSecondary: oklch(0.708 0 0);
-  --rk-colors-connectButtonBackground: oklch(0.269 0 0);
-  --rk-colors-connectButtonText: oklch(0.985 0 0);
+  --rk-colors-accentColor: #ffffff;
+  --rk-colors-accentColorForeground: #000000;
+  --rk-colors-modalBackground: #0a0a0a;
+  --rk-colors-modalBorder: rgba(255, 255, 255, 0.08);
+  --rk-colors-modalText: #ffffff;
+  --rk-colors-modalTextSecondary: rgba(255, 255, 255, 0.55);
+  --rk-colors-connectButtonBackground: #ffffff;
+  --rk-colors-connectButtonText: #000000;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
+  }
+  html {
+    scroll-behavior: smooth;
+    background-color: #000000;
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+  ::selection {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+  }
+}
+
+/* ===== YieldMind animations ===== */
+
+@keyframes ym-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ym-marquee-track {
+  animation: ym-marquee 30s linear infinite;
+  will-change: transform;
+}
+
+@keyframes ym-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+.ym-shimmer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+.ym-shimmer:hover::before {
+  animation: ym-shimmer 0.9s ease-out;
+}
+
+@keyframes ym-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ym-spin-slow {
+  animation: ym-spin-slow 30s linear infinite;
+}
+.ym-spin-slow-reverse {
+  animation: ym-spin-slow 50s linear infinite reverse;
+}
+
+@keyframes ym-conic-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ym-conic-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.5) 60deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+  animation: ym-conic-rotate 4s linear infinite;
+  z-index: 0;
+  filter: blur(6px);
+  opacity: 0.5;
+}
+
+@keyframes ym-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ym-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+.ym-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes ym-pulse-line {
+  0%,
+  100% {
+    transform: scaleX(0.6);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+.ym-pulse-line {
+  animation: ym-pulse-line 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes ym-dot-travel {
+  from {
+    left: 0%;
+  }
+  to {
+    left: 100%;
+  }
+}
+.ym-dot-travel {
+  animation: ym-dot-travel 3s linear infinite;
+}
+
+/* Glass card surface */
+.ym-glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+.ym-glass:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.06);
+}
+
+.ym-grid-bg {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.ym-diagonal-divider {
+  position: relative;
+  height: 80px;
+  background: #000;
+  overflow: hidden;
+}
+.ym-diagonal-divider::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--surface-1);
+  transform: skewY(-2deg);
+  transform-origin: top left;
+}
+
+.ym-text-stroke {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+  color: transparent;
+}
+
+/* Hide scrollbars on snap rails */
+.ym-no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ym-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Snap rail */
+.ym-snap-x {
+  scroll-snap-type: x mandatory;
+  overflow-x: auto;
+}
+.ym-snap-item {
+  scroll-snap-align: start;
 }
