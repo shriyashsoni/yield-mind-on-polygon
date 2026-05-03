@@ -9,7 +9,7 @@ import { useWeb3 } from "@/lib/web3-context"
 import { CONTRACT_ADDRESSES } from "@/lib/deployment-config"
 import { REWARDS_DISTRIBUTOR_ABI } from "@/lib/contract-write-abis"
 import { fetcher } from "@/hooks/use-protocol"
-import { formatNumber } from "@/components/dashboard/format"
+import { fmtNum } from "@/components/dashboard/format"
 
 type Snapshot = {
   ok: boolean
@@ -78,21 +78,21 @@ export function RewardsPanel() {
         <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-5">
           <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">Total distributed</p>
           <p className="text-3xl font-light tracking-tight text-white">
-            {formatNumber(Number(r?.totalDistributed ?? 0))}
+            {fmtNum(Number(r?.totalDistributed ?? 0))}
           </p>
           <p className="text-[10px] uppercase tracking-[0.16em] text-white/40">YLD all-time</p>
         </div>
         <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-5">
           <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">Pending pool</p>
           <p className="text-3xl font-light tracking-tight text-white">
-            {formatNumber(Number(r?.pendingRewards ?? 0))}
+            {fmtNum(Number(r?.pendingRewards ?? 0))}
           </p>
           <p className="text-[10px] uppercase tracking-[0.16em] text-white/40">YLD unclaimed</p>
         </div>
         <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-5">
           <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">Your rewards</p>
           <p className="text-3xl font-light tracking-tight text-white">
-            {account ? formatNumber(Number(pending)) : "—"}
+            {account ? fmtNum(Number(pending)) : "—"}
           </p>
           <p className="text-[10px] uppercase tracking-[0.16em] text-white/40">YLD claimable</p>
         </div>
@@ -101,8 +101,8 @@ export function RewardsPanel() {
       <div className="border-t border-white/10 p-6">
         <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
           <FieldLabel>Claim accumulated rewards</FieldLabel>
-          <MetricRow label="Pending" value={`${formatNumber(Number(pending))} YLD`} />
-          <MetricRow label="Lifetime claimed" value={`${formatNumber(Number(total))} YLD`} />
+          <MetricRow label="Pending" value={`${fmtNum(Number(pending))} YLD`} />
+          <MetricRow label="Lifetime claimed" value={`${fmtNum(Number(total))} YLD`} />
           <ActionInput type="text" value="" onChange={() => undefined} placeholder="" disabled />
           <ActionButton
             onClick={claim}
