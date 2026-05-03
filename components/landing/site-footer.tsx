@@ -7,7 +7,7 @@ const COLUMNS = [
       { label: "Dashboard", href: "/dashboard" },
       { label: "Strategies", href: "/strategies" },
       { label: "Analytics", href: "/analytics" },
-      { label: "Wave 6", href: "/release/wave-6" },
+      { label: "Governance", href: "/governance" },
     ],
   },
   {
