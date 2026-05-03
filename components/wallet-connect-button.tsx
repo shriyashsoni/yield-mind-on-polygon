@@ -2,7 +2,7 @@
 
 import { useWeb3 } from "@/lib/web3-context"
 import { Button } from "@/components/ui/button"
-import { Wallet, LogOut, AlertCircle } from "lucide-react"
+import { Wallet, LogOut, AlertCircle, Smartphone } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,17 @@ import { ethers } from "ethers"
 import { useVaultData } from "@/hooks/use-vault-data"
 
 export function WalletConnectButton() {
-  const { address, isConnected, chainId, connect, disconnect, switchNetwork, provider } = useWeb3()
+  const {
+    address,
+    isConnected,
+    chainId,
+    connect,
+    connectWalletConnect,
+    disconnect,
+    switchNetwork,
+    provider,
+    isConnecting,
+  } = useWeb3()
   const { usdcBalance, assetSymbol } = useVaultData()
 
   const isCorrectNetwork = chainId === 137 || chainId === 80002
@@ -37,10 +47,26 @@ export function WalletConnectButton() {
 
   if (!isConnected) {
     return (
-      <Button variant="default" size="sm" className="gap-2" onClick={connect}>
-        <Wallet className="w-4 h-4" />
-        Connect Wallet
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="default" size="sm" className="gap-2" disabled={isConnecting}>
+            <Wallet className="w-4 h-4" />
+            {isConnecting ? "Connecting…" : "Connect Wallet"}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>Choose a wallet</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={connect} className="cursor-pointer">
+            <Wallet className="w-4 h-4 mr-2" />
+            Browser wallet
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={connectWalletConnect} className="cursor-pointer">
+            <Smartphone className="w-4 h-4 mr-2" />
+            WalletConnect (mobile)
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     )
   }
 
