@@ -44,20 +44,26 @@ export function InvestPanel() {
     [snap?.events],
   )
 
-  // Position summary
-  const walletAsset = Number(vault.usdcBalance ?? 0)
+  // Position summary — wallet balance is the user's NATIVE MATIC.
+  const walletAsset = Number(vault.walletBalance ?? vault.usdcBalance ?? 0)
   const userShares = Number(vault.userShares ?? 0)
   const userBalance = Number(vault.userBalance ?? 0)
   const positionValue = userBalance * sharePrice
   const stakedYld = Number(staking.staked ?? 0)
   const pendingRewards = Number(staking.rewards ?? 0)
-  const walletYld = Number(staking.walletYld ?? 0)
+  // Stake tab spends native MATIC too, so its Max comes from the wallet
+  // balance (clamped against any tracked staking-asset balance if higher).
+  const walletYld = Math.max(Number(staking.walletYld ?? 0), walletAsset)
+
+  // Reserve a tiny amount of native MATIC so the user always has gas left
+  // after a Max deposit/stake. 0.05 MATIC is plenty for a few txs on Polygon.
+  const GAS_RESERVE = 0.05
 
   // Per-tab MAX + preview
   const max = useMemo(() => {
-    if (tab === "deposit") return walletAsset
+    if (tab === "deposit") return Math.max(0, walletAsset - GAS_RESERVE)
     if (tab === "withdraw") return userBalance
-    if (tab === "stake") return walletYld
+    if (tab === "stake") return Math.max(0, walletYld - GAS_RESERVE)
     return 0
   }, [tab, walletAsset, userBalance, walletYld])
 

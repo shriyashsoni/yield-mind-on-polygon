@@ -112,22 +112,22 @@ export function useStaking() {
       // 1. Approve YLD spend
       const allowance: bigint = await token.allowance?.(address, stakingAddress).catch(() => 0n) ?? 0n
       if (allowance < amountWei) {
-        toast.info("Approving YLD…", { description: "Confirm the approval in your wallet" })
+        toast.info("Approving stake token…", { description: "Confirm the approval in your wallet" })
         const approveTx = await token.approve(stakingAddress, amountWei)
         await approveTx.wait()
       }
 
       // 2. Stake
-      toast.info("Staking YLD…", { description: "Confirm the staking transaction" })
+      toast.info("Staking…", { description: "Confirm the staking transaction" })
       const tx = await stakingContract.stake(amountWei)
       const receipt = await tx.wait()
       trackActivity({
         type: "stake",
         amount,
-        assetSymbol: "YLD",
+        assetSymbol: "MATIC",
         txHash: receipt?.hash ?? tx.hash,
       })
-      toast.success("Stake confirmed", { description: `${amount} YLD now earning rewards` })
+      toast.success("Stake confirmed", { description: `${amount} MATIC now earning rewards` })
       refresh()
     } catch (err: any) {
       console.log("[v0] Stake failed", err)
@@ -150,11 +150,11 @@ export function useStaking() {
     try {
       const amountWei = ethers.parseUnits(amount, 18)
       const stakingContract = new ethers.Contract(stakingAddress, STAKING_ABI, signer)
-      toast.info("Unstaking YLD…", { description: "Confirm the transaction" })
+      toast.info("Unstaking…", { description: "Confirm the transaction" })
       const tx = await stakingContract.unstake(amountWei)
       const receipt = await tx.wait()
-      trackActivity({ type: "unstake", amount, assetSymbol: "YLD", txHash: receipt?.hash ?? tx.hash })
-      toast.success("Unstake confirmed", { description: `${amount} YLD released` })
+      trackActivity({ type: "unstake", amount, assetSymbol: "MATIC", txHash: receipt?.hash ?? tx.hash })
+      toast.success("Unstake confirmed", { description: `${amount} MATIC released` })
       refresh()
     } catch (err: any) {
       console.log("[v0] Unstake failed", err)

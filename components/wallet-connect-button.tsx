@@ -3,7 +3,7 @@
 import { useWeb3 } from "@/lib/web3-context"
 import { WALLETCONNECT_ENABLED } from "@/lib/wagmi"
 import { Button } from "@/components/ui/button"
-import { Wallet, LogOut, AlertCircle, Smartphone } from "lucide-react"
+import { Wallet, LogOut, AlertCircle, Smartphone, Check } from "lucide-react"
 import { toast } from "sonner"
 import {
   DropdownMenu,
@@ -14,9 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { useQuery } from "@tanstack/react-query"
-import { ethers } from "ethers"
 import { useVaultData } from "@/hooks/use-vault-data"
+
+const AMOY_FAUCET_URL = "https://faucet.polygon.technology/"
 
 export function WalletConnectButton() {
   const {
@@ -27,24 +27,18 @@ export function WalletConnectButton() {
     connectWalletConnect,
     disconnect,
     switchNetwork,
-    provider,
     isConnecting,
   } = useWeb3()
-  const { usdcBalance, assetSymbol } = useVaultData()
+  // walletBalance is the user's NATIVE MATIC — single source of truth.
+  const { walletBalance } = useVaultData()
 
   const isCorrectNetwork = chainId === 137 || chainId === 80002
-  const currentChain = chainId === 137 ? "Polygon" : chainId === 80002 ? "Amoy" : "Unknown"
-  const nativeSymbol = chainId === 137 || chainId === 80002 ? "MATIC" : "NATIVE"
+  const isAmoy = chainId === 80002
+  const isPolygon = chainId === 137
+  const currentChain = isPolygon ? "Polygon" : isAmoy ? "Amoy" : "Unknown"
 
-  const { data: nativeBalance = "0" } = useQuery({
-    queryKey: ["nativeBalance", address, chainId],
-    queryFn: async () => {
-      if (!provider || !address) return "0"
-      const balance = await provider.getBalance(address)
-      return ethers.formatUnits(balance, 18)
-    },
-    enabled: !!provider && !!address,
-    refetchInterval: 10000,
+  const formattedBalance = Number(walletBalance ?? 0).toLocaleString(undefined, {
+    maximumFractionDigits: 4,
   })
 
   const handleConnect = async (kind: "injected" | "wc") => {
@@ -67,7 +61,7 @@ export function WalletConnectButton() {
         /modal closed/i.test(msg) ||
         /Connection request reset/i.test(msg)
       ) {
-        return // user-cancelled, stay quiet
+        return
       }
       console.log("[v0] wallet connect failed", err)
       toast.error(msg || "Connection failed. Please try again.")
@@ -111,9 +105,14 @@ export function WalletConnectButton() {
   return (
     <div className="flex items-center gap-2">
       {!isCorrectNetwork && (
-        <Button variant="destructive" size="sm" onClick={() => switchNetwork(137)} className="gap-2">
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => switchNetwork(80002)}
+          className="gap-2"
+        >
           <AlertCircle className="w-4 h-4" />
-          Switch to Polygon
+          Switch to Amoy
         </Button>
       )}
       <DropdownMenu>
@@ -125,7 +124,7 @@ export function WalletConnectButton() {
                 {address?.slice(0, 6)}...{address?.slice(-4)}
               </span>
               <span className="text-[10px] text-muted-foreground">
-                {Number(nativeBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })} {nativeSymbol}
+                {formattedBalance} MATIC
               </span>
             </div>
             <Badge variant="secondary" className="ml-1">
@@ -133,26 +132,36 @@ export function WalletConnectButton() {
             </Badge>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent align="end" className="w-64">
           <DropdownMenuLabel>Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="font-mono text-xs">{address}</DropdownMenuItem>
-          <DropdownMenuItem className="text-xs flex justify-between">
-            <span>Wallet Balance</span>
-            <span className="font-medium">
-              {Number(nativeBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })} {nativeSymbol}
-            </span>
+          <DropdownMenuItem className="font-mono text-[11px] break-all">
+            {address}
           </DropdownMenuItem>
-          <DropdownMenuItem className="text-xs flex justify-between">
-            <span>{assetSymbol} Balance</span>
-            <span className="font-medium">{Number(usdcBalance).toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+          <DropdownMenuItem className="text-xs flex justify-between cursor-default focus:bg-transparent">
+            <span className="text-muted-foreground">Wallet balance</span>
+            <span className="font-medium tabular-nums">{formattedBalance} MATIC</span>
           </DropdownMenuItem>
+          {isAmoy ? (
+            <DropdownMenuItem
+              onClick={() => window.open(AMOY_FAUCET_URL, "_blank", "noopener,noreferrer")}
+              className="text-xs cursor-pointer"
+            >
+              <span className="mr-2">↗</span>
+              Get test MATIC (Amoy faucet)
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => switchNetwork(137)} className="cursor-pointer">
-            Switch to Polygon Mainnet
-          </DropdownMenuItem>
+          <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            Network
+          </DropdownMenuLabel>
           <DropdownMenuItem onClick={() => switchNetwork(80002)} className="cursor-pointer">
-            Switch to Amoy Testnet
+            {isAmoy ? <Check className="w-4 h-4 mr-2" /> : <span className="w-4 h-4 mr-2" />}
+            Polygon Amoy (testnet)
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => switchNetwork(137)} className="cursor-pointer">
+            {isPolygon ? <Check className="w-4 h-4 mr-2" /> : <span className="w-4 h-4 mr-2" />}
+            Polygon Mainnet
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={disconnect} className="cursor-pointer text-destructive">
