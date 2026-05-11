@@ -5,55 +5,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { ethers } from "ethers"
 import { useState } from "react"
 import { toast } from "sonner"
-import { CONTRACT_ADDRESSES, YLD_TOKEN_ABI } from "@/lib/contract-abis"
+import { CONTRACT_ADDRESSES, YLD_TOKEN_ABI, YLD_STAKING_ABI } from "@/lib/contract-abis"
 import { trackActivity } from "@/lib/activity"
 
-/**
- * Rich ABI for the deployed YLDStaking contract. Beyond the read methods
- * already in `YLD_STAKING_ABI`, we add `unstake` + `claimRewards` (the
- * Solidity contract is a standard reward-streaming staker, so these
- * selectors are the conventional names). If a method is missing on
- * the deployment we surface a clean toast instead of a cryptic revert.
- */
-const STAKING_ABI = [
-  // reads
-  {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
-    name: "getStakedAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
-    name: "getRewards",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  // writes
-  {
-    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-    name: "stake",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-    name: "unstake",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "claimRewards",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-] as const
+// Use the canonical ABI from contract-abis.ts (now includes unstake + claimRewards)
+const STAKING_ABI = YLD_STAKING_ABI
 
 export function useStaking() {
   const { address, provider, signer, isConnected } = useWeb3()

@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { ethers } from "ethers"
 import { useState } from "react"
 import { toast } from "sonner"
-import { CONTRACTS, VAULT_ABI } from "@/lib/contracts"
+import { CONTRACT_ADDRESSES, YIELD_VAULT_V4_ABI } from "@/lib/contract-abis"
 import { trackActivity } from "@/lib/activity"
 
 /**
@@ -20,8 +20,7 @@ export function useVaultRebalance() {
   const queryClient = useQueryClient()
   const [isPending, setIsPending] = useState(false)
 
-  const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
-  const vaultAddress = CONTRACTS[networkKey].vault
+  const vaultAddress = CONTRACT_ADDRESSES.AMOY.YieldVaultV4
 
   const trigger = async () => {
     if (!isConnected || !signer) {
@@ -30,12 +29,11 @@ export function useVaultRebalance() {
     }
     setIsPending(true)
     try {
-      const vault = new ethers.Contract(vaultAddress, VAULT_ABI, signer)
+      const vault = new ethers.Contract(vaultAddress, YIELD_VAULT_V4_ABI, signer)
       toast.info("Submitting rebalance…", {
         description: "The AI agent will recompute strategy weights",
       })
-      // The no-arg overload accepts no parameters; ethers picks it via fragment matching.
-      const tx = await (vault.getFunction("rebalance()") as any)()
+      const tx = await vault.rebalance()
       const receipt = await tx.wait()
       trackActivity({
         type: "rebalance",

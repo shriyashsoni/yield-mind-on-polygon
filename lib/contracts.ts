@@ -38,49 +38,33 @@ export const getVaultProductAddress = (chainId: number | null, risk: "low" | "me
   return CONTRACTS[networkKey].vaultProducts[risk]
 }
 
+// ABI matching the actual deployed YieldVaultV4 on Polygon Amoy.
+// deposit(uint256) and withdraw(uint256) are single-arg — NOT the ERC-4626 standard.
 export const VAULT_ABI = [
   {
-    inputs: [
-      { internalType: "uint256", name: "amount", type: "uint256" },
-      { internalType: "address", name: "receiver", type: "address" },
-    ],
+    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
     name: "deposit",
-    outputs: [{ internalType: "uint256", name: "shares", type: "uint256" }],
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "shares", type: "uint256" }],
+    name: "withdraw",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "asset",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "getTotalAssets",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "uint256", name: "shares", type: "uint256" },
-      { internalType: "address", name: "receiver", type: "address" },
-      { internalType: "address", name: "owner", type: "address" },
-    ],
-    name: "redeem",
-    outputs: [{ internalType: "uint256", name: "assets", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "assets", type: "uint256" },
-      { internalType: "address", name: "receiver", type: "address" },
-      { internalType: "address", name: "owner", type: "address" },
-    ],
-    name: "withdraw",
-    outputs: [{ internalType: "uint256", name: "shares", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
-    name: "totalAssets",
+    name: "getYieldRate",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
@@ -93,24 +77,7 @@ export const VAULT_ABI = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "shares", type: "uint256" }],
-    name: "convertToAssets",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [],
-    name: "rebalance",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "twapPrice", type: "uint256" },
-      { internalType: "uint256", name: "spotPrice", type: "uint256" },
-    ],
     name: "rebalance",
     outputs: [],
     stateMutability: "nonpayable",

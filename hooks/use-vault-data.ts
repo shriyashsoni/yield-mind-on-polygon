@@ -1,42 +1,35 @@
 import { useWeb3 } from "@/lib/web3-context"
 import { useQuery } from "@tanstack/react-query"
 import { ethers } from "ethers"
-import { CONTRACTS, VAULT_ABI, ERC20_ABI, isDeployedAddress } from "@/lib/contracts"
+import { CONTRACT_ADDRESSES, YLD_TOKEN_ABI, YIELD_VAULT_V4_ABI } from "@/lib/contract-abis"
+import { CONTRACTS } from "@/lib/contracts"
 
 /**
- * Single source of truth for the user's wallet balance + their vault position.
+ * Reads the deployed YieldVaultV4 on Polygon Amoy using the actual ABI:
+ *   - getTotalAssets()  → tvl
+ *   - getYieldRate()    → apy
+ *   - balanceOf(addr)   → user vault shares
+ *   - deposit / withdraw (handled in use-vault-actions)
  *
- * The whole UI is denominated in MATIC (Polygon's native asset). Even when the
- * underlying ERC-4626 asset is some test ERC-20 (USDC / YLD / etc.) on Amoy, we
- * surface the user's NATIVE MATIC balance as the wallet balance so the
- * "Wallet" / "Max" affordances always reflect the funds the user actually has
- * to spend. The deposit/stake calls themselves still go through the deployed
- * contracts (which is fine — on testnet the user pays gas in MATIC and a
- * revert simply surfaces a clear toast).
+ * The user's wallet balance is their NATIVE POL (fetched via provider.getBalance).
+ * The YLDToken balance is also read separately for staking needs.
  */
 export function useVaultData() {
   const { address, chainId, provider } = useWeb3()
 
-  // The app is locked to Polygon Amoy testnet — always use the Amoy contracts.
+  const vaultAddress = CONTRACT_ADDRESSES.AMOY.YieldVaultV4
+  const tokenAddress = CONTRACT_ADDRESSES.AMOY.YLDToken
   const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
-  const vaultAddress = CONTRACTS[networkKey].vault
-  const defaultAssetAddress = CONTRACTS[networkKey].token
 
-  // Native MATIC balance for the connected address — this is what the UI shows
-  // as the user's "wallet balance" everywhere.
+  // Native POL balance — shown everywhere as "wallet balance"
   const { data: nativeBalanceWei } = useQuery({
     queryKey: ["nativeBalance", address, chainId],
     queryFn: async () => {
       if (!provider || !address) return 0n
-      try {
-        return await provider.getBalance(address)
-      } catch (err) {
-        console.log("[v0] native balance fetch failed", err)
-        return 0n
-      }
+      return provider.getBalance(address).catch(() => 0n)
     },
     enabled: !!provider && !!address,
-    refetchInterval: 10000,
+    refetchInterval: 10_000,
   })
 
   const nativeBalance = nativeBalanceWei ? ethers.formatUnits(nativeBalanceWei, 18) : "0"
@@ -44,76 +37,57 @@ export function useVaultData() {
   const { data, isLoading } = useQuery({
     queryKey: ["vaultData", address, chainId],
     queryFn: async () => {
-      if (!provider || !address || !isDeployedAddress(vaultAddress)) return null
-
+      if (!provider || !address) return null
       try {
-        const vaultContract = new ethers.Contract(vaultAddress, VAULT_ABI, provider)
-        const assetAddress = (await vaultContract.asset().catch(() => defaultAssetAddress)) as string
-        const assetContract = new ethers.Contract(assetAddress, ERC20_ABI, provider)
+        const vault = new ethers.Contract(vaultAddress, YIELD_VAULT_V4_ABI, provider)
+        const token = new ethers.Contract(tokenAddress, YLD_TOKEN_ABI, provider)
 
-        const [assetDecimals] = await Promise.all([assetContract.decimals().catch(() => 18)])
-
-        const [totalAssets, userShares] = await Promise.all([
-          vaultContract.totalAssets(),
-          vaultContract.balanceOf(address),
+        const [totalAssets, userShares, yieldRate, yldBalance] = await Promise.allSettled([
+          vault.getTotalAssets(),
+          vault.balanceOf(address),
+          vault.getYieldRate(),
+          token.balanceOf(address),
         ])
 
-        const userBalance = userShares > 0n ? await vaultContract.convertToAssets(userShares) : 0n
-
         return {
-          totalAssets,
-          userShares,
-          userBalance,
-          assetAddress,
-          assetDecimals: Number(assetDecimals),
+          totalAssets: totalAssets.status === "fulfilled" ? (totalAssets.value as bigint) : 0n,
+          userShares: userShares.status === "fulfilled" ? (userShares.value as bigint) : 0n,
+          yieldRate: yieldRate.status === "fulfilled" ? (yieldRate.value as bigint) : 0n,
+          yldBalance: yldBalance.status === "fulfilled" ? (yldBalance.value as bigint) : 0n,
         }
-      } catch (error) {
-        console.log("[v0] Contract call failed, using zeros for vault state", error)
+      } catch (err) {
+        console.log("[v0] vault read failed", err)
         return null
       }
     },
     enabled: !!provider && !!address,
-    refetchInterval: 10000,
+    refetchInterval: 10_000,
   })
 
-  // Always surface the user's native MATIC balance as the wallet balance, even
-  // when the vault read fails — this is what the user sees in their wallet
-  // UI and what every "Max" / "Wallet" affordance should reference.
-  if (!data) {
-    return {
-      totalValueLocked: "0",
-      userBalance: "0",
-      userShares: "0",
-      currentAPY: 0,
-      // Wallet balance == native MATIC — single source of truth.
-      walletBalance: nativeBalance,
-      usdcBalance: nativeBalance,
-      assetAddress: defaultAssetAddress,
-      assetSymbol: "POL",
-      assetDecimals: 18,
-      isLoading,
-      vaultAddress,
-      usdcAddress: CONTRACTS[networkKey].usdc,
-      isDemoMode: false,
-    }
-  }
+  const tvl = data ? ethers.formatUnits(data.totalAssets, 18) : "0"
+  const userShares = data ? ethers.formatUnits(data.userShares, 18) : "0"
+  // Share price: if totalAssets > 0 and userShares > 0 we can derive; otherwise 1:1
+  const totalSharesFloat = data ? Number(ethers.formatUnits(data.totalAssets, 18)) : 0
+  const userSharesFloat = Number(userShares)
+  // yieldRate is stored as basis-points on-chain (e.g. 500 = 5%)
+  const apyBps = data ? Number(data.yieldRate) : 0
+  const currentAPY = apyBps / 100
+  const yldTokenBalance = data ? ethers.formatUnits(data.yldBalance, 18) : "0"
 
-  const decimals = data.assetDecimals
   return {
-    totalValueLocked: ethers.formatUnits(data.totalAssets, decimals),
-    userBalance: ethers.formatUnits(data.userBalance, decimals),
-    userShares: ethers.formatUnits(data.userShares, 18),
-    currentAPY: 0,
-    walletBalance: nativeBalance,
-    // Back-compat alias — every consumer that read `usdcBalance` now sees the
-    // user's actual native POL (Amoy testnet), which is what they want to spend.
-    usdcBalance: nativeBalance,
-    assetAddress: data.assetAddress,
+    totalValueLocked: tvl,
+    userBalance: userShares,   // vault shares the user holds
+    userShares,
+    currentAPY,
+    walletBalance: nativeBalance,     // native POL
+    usdcBalance: nativeBalance,       // back-compat alias
+    yldTokenBalance,                  // YLD ERC-20 balance (for staking)
+    assetAddress: tokenAddress,
     assetSymbol: "POL",
-    assetDecimals: decimals,
+    assetDecimals: 18,
     isLoading,
     vaultAddress,
-    usdcAddress: data.assetAddress,
+    usdcAddress: CONTRACTS[networkKey].usdc,
     isDemoMode: false,
   }
 }

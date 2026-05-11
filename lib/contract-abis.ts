@@ -41,6 +41,26 @@ export const YLD_TOKEN_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
+  {
+    inputs: [
+      { internalType: 'address', name: 'spender', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+    ],
+    name: 'approve',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'owner', type: 'address' },
+      { internalType: 'address', name: 'spender', type: 'address' },
+    ],
+    name: 'allowance',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 ] as const;
 
 export const YIELD_VAULT_V4_ABI = [
@@ -167,6 +187,7 @@ export const INSURANCE_RESERVE_ABI = [
 ] as const;
 
 export const YLD_STAKING_ABI = [
+  // reads
   {
     inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
     name: 'getStakedAmount',
@@ -181,9 +202,24 @@ export const YLD_STAKING_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
+  // writes
   {
     inputs: [{ internalType: 'uint256', name: 'amount', type: 'uint256' }],
     name: 'stake',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: 'amount', type: 'uint256' }],
+    name: 'unstake',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'claimRewards',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
