@@ -1,7 +1,7 @@
 "use client"
 
 import { createConfig, http } from "wagmi"
-import { polygon, polygonAmoy } from "wagmi/chains"
+import { polygonAmoy } from "wagmi/chains"
 import { injected, walletConnect } from "@wagmi/connectors"
 
 const projectId =
@@ -46,18 +46,20 @@ const connectors = [
     : []),
 ]
 
+// The whole app runs on Polygon Amoy testnet (chain 80002).
+// Mainnet is intentionally excluded so every connected wallet always lands on the testnet.
 export const wagmiConfig = createConfig({
-  chains: [polygon, polygonAmoy],
+  chains: [polygonAmoy],
   connectors,
   transports: {
-    [polygon.id]: http(),
-    [polygonAmoy.id]: http(),
+    [polygonAmoy.id]: http("https://rpc-amoy.polygon.technology"),
   },
   ssr: true,
 })
 
-export const SUPPORTED_CHAIN_IDS = [polygon.id, polygonAmoy.id] as const
+export const SUPPORTED_CHAIN_IDS = [polygonAmoy.id] as const
 export const DEFAULT_CHAIN_ID = polygonAmoy.id
+export const AMOY_CHAIN_ID = polygonAmoy.id
 export const WALLETCONNECT_ENABLED = isWcConfigured
 
 declare module "wagmi" {

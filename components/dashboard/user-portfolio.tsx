@@ -46,9 +46,9 @@ export function UserPortfolio() {
       }
     >
       <div className="grid grid-cols-2 gap-px bg-white/10 lg:grid-cols-4">
-        <Tile label="MATIC balance" value={fmtNum(wallet, 2)} sub="MATIC" />
-        <Tile label="Vault shares" value={fmtNum(shares, 4)} sub="ymMATIC" />
-        <Tile label="Position value" value={fmtUsd(positionValue, 2)} sub={`@ ${sharePrice.toFixed(4)} MATIC/share`} />
+        <Tile label="POL balance" value={fmtNum(wallet, 4)} sub="POL · Amoy testnet" />
+        <Tile label="Vault shares" value={fmtNum(shares, 4)} sub="ymPOL" />
+        <Tile label="Position value" value={fmtUsd(positionValue, 4)} sub={`@ ${sharePrice.toFixed(4)} POL/share`} />
         <Tile
           label="Share of vault"
           value={

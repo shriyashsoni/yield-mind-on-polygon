@@ -107,8 +107,7 @@ export function WalletGate({ children }: { children: ReactNode }) {
               Connect a wallet to enter the dashboard.
             </h1>
             <p className="max-w-xl text-pretty text-sm leading-relaxed text-white/55 md:text-base">
-              YieldMind is a non-custodial protocol on Polygon. The dashboard reads your real on-chain
-              positions, AI insights, and live oracle prices — all of it requires a connected EVM wallet.
+              YieldMind runs entirely on <strong className="text-white">Polygon Amoy testnet</strong> (chain 80002). All smart contracts, AI agent decisions, vault deposits, staking, and governance votes use testnet POL — no real money involved. Connect any EVM wallet to start.
             </p>
           </div>
 
