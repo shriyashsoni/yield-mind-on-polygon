@@ -67,18 +67,17 @@ export async function readVault(): Promise<VaultSnapshot> {
   const provider = getProvider()
   const vault = new ethers.Contract(ADDR.YieldVaultV4, YIELD_VAULT_V4_ABI, provider)
 
-  const [totalAssetsRaw, yieldRateRaw, blockNumber] = await Promise.all([
-    safe(() => vault.getTotalAssets() as Promise<bigint>, 0n),
-    safe(() => vault.getYieldRate() as Promise<bigint>, 0n),
+  // Verified selectors: totalAssets() ✓  (getTotalAssets / getYieldRate do NOT exist on-chain)
+  const [totalAssetsRaw, blockNumber] = await Promise.all([
+    safe(() => vault.totalAssets() as Promise<bigint>, 0n),
     safe(() => provider.getBlockNumber(), 0),
   ])
 
-  const yieldRateBps = Number(yieldRateRaw)
   return {
     totalAssetsRaw: totalAssetsRaw.toString(),
     totalAssets: ethers.formatUnits(totalAssetsRaw, 18),
-    yieldRateBps,
-    yieldRateApy: yieldRateBps / 100, // bps -> %
+    yieldRateBps: 0,
+    yieldRateApy: 0,
     blockNumber,
     source: blockNumber > 0 ? "onchain" : "rpc-error",
   }

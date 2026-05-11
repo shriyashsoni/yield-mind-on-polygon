@@ -1,93 +1,82 @@
-import { useWeb3 } from "@/lib/web3-context"
+"use client"
+
 import { useQuery } from "@tanstack/react-query"
+import { useWeb3 } from "@/lib/web3-context"
 import { ethers } from "ethers"
-import { CONTRACT_ADDRESSES, YLD_TOKEN_ABI, YIELD_VAULT_V4_ABI } from "@/lib/contract-abis"
-import { CONTRACTS } from "@/lib/contracts"
+import { CONTRACT_ADDRESSES, YIELD_VAULT_V4_ABI, YLD_TOKEN_ABI } from "@/lib/contract-abis"
+
+const VAULT_ADDR = CONTRACT_ADDRESSES.AMOY.YieldVaultV4
+const TOKEN_ADDR = CONTRACT_ADDRESSES.AMOY.YLDToken
 
 /**
- * Reads the deployed YieldVaultV4 on Polygon Amoy using the actual ABI:
- *   - getTotalAssets()  → tvl
- *   - getYieldRate()    → apy
- *   - balanceOf(addr)   → user vault shares
- *   - deposit / withdraw (handled in use-vault-actions)
+ * Reads YieldVaultV4 (ERC-4626) on Polygon Amoy.
+ * Verified selectors (from on-chain bytecode probe):
+ *   totalAssets()          → total YLD managed by vault
+ *   totalSupply()          → total vault shares outstanding
+ *   balanceOf(address)     → user's vault shares
+ *   previewRedeem(shares)  → YLD value of shares
+ *   asset()                → YLDToken address
  *
- * The user's wallet balance is their NATIVE POL (fetched via provider.getBalance).
- * The YLDToken balance is also read separately for staking needs.
+ * The user's wallet balance shown in the UI is their YLD ERC-20 balance
+ * (what they can deposit). Native POL is shown separately for gas info.
  */
 export function useVaultData() {
-  const { address, chainId, provider } = useWeb3()
+  const { provider, address } = useWeb3()
 
-  const vaultAddress = CONTRACT_ADDRESSES.AMOY.YieldVaultV4
-  const tokenAddress = CONTRACT_ADDRESSES.AMOY.YLDToken
-  const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
-
-  // Native POL balance — shown everywhere as "wallet balance"
-  const { data: nativeBalanceWei } = useQuery({
-    queryKey: ["nativeBalance", address, chainId],
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["vaultData", address],
+    enabled: !!provider,
+    refetchInterval: 15_000,
     queryFn: async () => {
-      if (!provider || !address) return 0n
-      return provider.getBalance(address).catch(() => 0n)
-    },
-    enabled: !!provider && !!address,
-    refetchInterval: 10_000,
-  })
+      if (!provider) return null
+      const vault = new ethers.Contract(VAULT_ADDR, YIELD_VAULT_V4_ABI, provider)
+      const token = new ethers.Contract(TOKEN_ADDR, YLD_TOKEN_ABI, provider)
 
-  const nativeBalance = nativeBalanceWei ? ethers.formatUnits(nativeBalanceWei, 18) : "0"
+      const [totalAssets, totalSupply, userShares, userYLD, nativeBal] = await Promise.all([
+        vault.totalAssets().catch(() => 0n),
+        vault.totalSupply().catch(() => 0n),
+        address ? vault.balanceOf(address).catch(() => 0n) : 0n,
+        address ? token.balanceOf(address).catch(() => 0n) : 0n,
+        address ? provider.getBalance(address).catch(() => 0n) : 0n,
+      ])
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["vaultData", address, chainId],
-    queryFn: async () => {
-      if (!provider || !address) return null
-      try {
-        const vault = new ethers.Contract(vaultAddress, YIELD_VAULT_V4_ABI, provider)
-        const token = new ethers.Contract(tokenAddress, YLD_TOKEN_ABI, provider)
+      const totalAssetsFmt = Number(ethers.formatUnits(totalAssets as bigint, 18))
+      const totalSupplyFmt = Number(ethers.formatUnits(totalSupply as bigint, 18))
+      const sharePrice     = totalSupplyFmt > 0 ? totalAssetsFmt / totalSupplyFmt : 1
+      const userSharesFmt  = Number(ethers.formatUnits(userShares as bigint, 18))
+      const userAssetValue = userSharesFmt * sharePrice
+      const yldWallet      = Number(ethers.formatUnits(userYLD    as bigint, 18))
+      const nativeWallet   = Number(ethers.formatEther(nativeBal  as bigint))
 
-        const [totalAssets, userShares, yieldRate, yldBalance] = await Promise.allSettled([
-          vault.getTotalAssets(),
-          vault.balanceOf(address),
-          vault.getYieldRate(),
-          token.balanceOf(address),
-        ])
-
-        return {
-          totalAssets: totalAssets.status === "fulfilled" ? (totalAssets.value as bigint) : 0n,
-          userShares: userShares.status === "fulfilled" ? (userShares.value as bigint) : 0n,
-          yieldRate: yieldRate.status === "fulfilled" ? (yieldRate.value as bigint) : 0n,
-          yldBalance: yldBalance.status === "fulfilled" ? (yldBalance.value as bigint) : 0n,
-        }
-      } catch (err) {
-        console.log("[v0] vault read failed", err)
-        return null
+      return {
+        totalValueLocked: String(totalAssetsFmt),
+        totalShares:      String(totalSupplyFmt),
+        sharePrice,
+        userShares:       String(userSharesFmt),
+        userBalance:      String(userAssetValue),
+        walletYld:        String(yldWallet),
+        walletBalance:    String(nativeWallet),
+        usdcBalance:      String(yldWallet),  // back-compat alias
       }
     },
-    enabled: !!provider && !!address,
-    refetchInterval: 10_000,
   })
 
-  const tvl = data ? ethers.formatUnits(data.totalAssets, 18) : "0"
-  const userShares = data ? ethers.formatUnits(data.userShares, 18) : "0"
-  // Share price: if totalAssets > 0 and userShares > 0 we can derive; otherwise 1:1
-  const totalSharesFloat = data ? Number(ethers.formatUnits(data.totalAssets, 18)) : 0
-  const userSharesFloat = Number(userShares)
-  // yieldRate is stored as basis-points on-chain (e.g. 500 = 5%)
-  const apyBps = data ? Number(data.yieldRate) : 0
-  const currentAPY = apyBps / 100
-  const yldTokenBalance = data ? ethers.formatUnits(data.yldBalance, 18) : "0"
-
   return {
-    totalValueLocked: tvl,
-    userBalance: userShares,   // vault shares the user holds
-    userShares,
-    currentAPY,
-    walletBalance: nativeBalance,     // native POL
-    usdcBalance: nativeBalance,       // back-compat alias
-    yldTokenBalance,                  // YLD ERC-20 balance (for staking)
-    assetAddress: tokenAddress,
-    assetSymbol: "POL",
-    assetDecimals: 18,
+    totalValueLocked: data?.totalValueLocked ?? "0",
+    totalShares:      data?.totalShares      ?? "0",
+    sharePrice:       data?.sharePrice       ?? 1,
+    userShares:       data?.userShares       ?? "0",
+    userBalance:      data?.userBalance      ?? "0",
+    walletYld:        data?.walletYld        ?? "0",
+    walletBalance:    data?.walletBalance    ?? "0",
+    usdcBalance:      data?.usdcBalance      ?? "0",
+    assetSymbol:      "YLD",
+    assetDecimals:    18,
+    assetAddress:     TOKEN_ADDR,
+    vaultAddress:     VAULT_ADDR,
+    currentAPY:       0,
     isLoading,
-    vaultAddress,
-    usdcAddress: CONTRACTS[networkKey].usdc,
-    isDemoMode: false,
+    isDemoMode:       false,
+    refetch,
   }
 }

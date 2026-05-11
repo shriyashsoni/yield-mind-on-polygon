@@ -38,59 +38,8 @@ export const getVaultProductAddress = (chainId: number | null, risk: "low" | "me
   return CONTRACTS[networkKey].vaultProducts[risk]
 }
 
-// ABI matching the actual deployed YieldVaultV4 on Polygon Amoy.
-// deposit(uint256) and withdraw(uint256) are single-arg — NOT the ERC-4626 standard.
-export const VAULT_ABI = [
-  {
-    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
-    name: "deposit",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "shares", type: "uint256" }],
-    name: "withdraw",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getTotalAssets",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getYieldRate",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
-    name: "balanceOf",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "rebalance",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "lastRebalanceAt",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const
+// Re-export the verified ABI from contract-abis.ts as VAULT_ABI for back-compat.
+export { YIELD_VAULT_V4_ABI as VAULT_ABI } from "@/lib/contract-abis"
 
 export const ERC20_ABI = [
   {
