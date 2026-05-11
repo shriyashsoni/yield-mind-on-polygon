@@ -29,7 +29,7 @@ import {
   useDisconnect,
   useSwitchChain,
 } from "wagmi"
-import { polygon, polygonAmoy } from "wagmi/chains"
+import { polygonAmoy } from "wagmi/chains"
 import { getAccount } from "wagmi/actions"
 import type { EIP1193Provider } from "viem"
 
@@ -152,13 +152,9 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   }, [disconnectAsync])
 
   const switchNetwork = useCallback(
-    async (target: number) => {
-      if (target !== polygon.id && target !== polygonAmoy.id) {
-        throw new Error(
-          `Unsupported chain ${target}. Only Polygon (137) and Polygon Amoy (80002) are supported.`,
-        )
-      }
-      await switchChainAsync({ chainId: target as 137 | 80002 })
+    async (_target?: number) => {
+      // The app only supports Polygon Amoy testnet. Always switch to it.
+      await switchChainAsync({ chainId: polygonAmoy.id })
     },
     [switchChainAsync],
   )

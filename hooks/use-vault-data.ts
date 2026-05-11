@@ -17,6 +17,7 @@ import { CONTRACTS, VAULT_ABI, ERC20_ABI, isDeployedAddress } from "@/lib/contra
 export function useVaultData() {
   const { address, chainId, provider } = useWeb3()
 
+  // The app is locked to Polygon Amoy testnet — always use the Amoy contracts.
   const networkKey = chainId === 137 ? "polygon" : "polygonAmoy"
   const vaultAddress = CONTRACTS[networkKey].vault
   const defaultAssetAddress = CONTRACTS[networkKey].token
@@ -88,7 +89,7 @@ export function useVaultData() {
       walletBalance: nativeBalance,
       usdcBalance: nativeBalance,
       assetAddress: defaultAssetAddress,
-      assetSymbol: "MATIC",
+      assetSymbol: "POL",
       assetDecimals: 18,
       isLoading,
       vaultAddress,
@@ -105,10 +106,10 @@ export function useVaultData() {
     currentAPY: 0,
     walletBalance: nativeBalance,
     // Back-compat alias — every consumer that read `usdcBalance` now sees the
-    // user's actual native MATIC, which is what they want to spend.
+    // user's actual native POL (Amoy testnet), which is what they want to spend.
     usdcBalance: nativeBalance,
     assetAddress: data.assetAddress,
-    assetSymbol: "MATIC",
+    assetSymbol: "POL",
     assetDecimals: decimals,
     isLoading,
     vaultAddress,

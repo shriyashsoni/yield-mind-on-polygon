@@ -45,7 +45,7 @@ export function StrategyList() {
                   <Td>
                     <div className="font-medium text-white">{s.name}</div>
                     <div className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">
-                      {s.asset ?? "MATIC"}
+                      {s.asset ?? "POL"}
                     </div>
                   </Td>
                   <Td className="text-white/70">{s.protocol}</Td>

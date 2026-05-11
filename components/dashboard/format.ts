@@ -1,6 +1,6 @@
-// All on-chain values in YieldMind are denominated in MATIC (Polygon's native
-// asset). The legacy `fmtUsd` name is preserved so existing call-sites keep
-// working — it now formats as a MATIC amount rather than a USD amount.
+// All on-chain values in YieldMind are denominated in POL — the native token
+// of Polygon Amoy testnet (chain 80002). "fmtUsd" is kept as a back-compat
+// alias so existing call-sites work without changes.
 
 const formatAmount = (n: number, max: number) =>
   new Intl.NumberFormat("en-US", {
@@ -8,10 +8,12 @@ const formatAmount = (n: number, max: number) =>
     maximumFractionDigits: max,
   }).format(Number.isFinite(n) ? n : 0)
 
-export const fmtMatic = (n: number, max = 2) => `${formatAmount(n, max)} MATIC`
+// Primary formatter: "1,234.56 POL"
+export const fmtPol = (n: number, max = 2) => `${formatAmount(n, max)} POL`
 
-// Backwards-compatible alias used widely across the dashboard. Renders MATIC.
-export const fmtUsd = fmtMatic
+// Back-compat alias — renders as POL (not USD)
+export const fmtUsd = fmtPol
+export const fmtMatic = fmtPol
 
 export const fmtNum = (n: number, max = 2) => formatAmount(n, max)
 
